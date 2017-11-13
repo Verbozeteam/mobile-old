@@ -1,4 +1,8 @@
-import { AppRegistry } from 'react-native';
-import App from './App';
+/* @flow */
 
-AppRegistry.registerComponent('VerbozeMobile', () => App);
+'user strict';
+
+import { AppRegistry } from 'react-native';
+import VerbozeMobile from './VerbozeMobile';
+
+AppRegistry.registerComponent('VerbozeMobile', () => VerbozeMobile);
