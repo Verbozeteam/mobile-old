@@ -1,31 +1,62 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- * @flow
- */
+/* @flow */
 
-import React, { Component } from 'react';
-import {
-  Platform,
-  StyleSheet,
-  Text,
-  View
-} from 'react-native';
+import * as React from 'react';
+import { View, Text, AppRegistry, StyleSheet } from 'react-native';
 
-const instructions = Platform.select({
-  ios: 'Press Cmd+R to reload,\n' +
-    'Cmd+D or shake for dev menu',
-  android: 'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+const GenericToggle = require('./components/GenericToggle');
 
-export default class App extends Component<{}> {
+type PropsType = {};
+
+type State = {};
+
+class VerbozeMobile extends React.Component<PropsType, StateType> {
+
+  state = {
+    toggle1: 0,
+    toggle2: 0,
+  };
+
+  // websocket
+  _ws: Object = null;
+
+  componentDidMount() {
+
+  }
+
   render() {
+
+    /* FOLLOW CODE IS TEST CODE FOR GENERIC TOGGLE */
+    const toggle1_actions = [
+      () => {
+        this.setState({toggle1: 0});
+      },
+      () => {
+        this.setState({toggle1: 1});
+      }
+    ];
+
+    const toggle2_actions = [
+      () => {
+        this.setState({toggle2: 0});
+      },
+      () => {
+        this.setState({toggle2: 1});
+      },
+      () => {
+        this.setState({toggle2: 2})
+      }
+    ];
+
     return (
       <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Verboze Mobile
-        </Text>
+          <GenericToggle actions={toggle1_actions}
+            selected={this.state.toggle1} />
+          <GenericToggle actions={toggle1_actions}
+            selectedGradient={['#F5515F', '#9F041B']}
+            selected={this.state.toggle1} />
+          <GenericToggle values={['Off', 'Low', 'High']}
+            actions={toggle2_actions}
+            selected={this.state.toggle2} />
       </View>
     );
   }
@@ -36,16 +67,8 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#F5FCFF',
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10,
-  },
-  instructions: {
-    textAlign: 'center',
-    color: '#333333',
-    marginBottom: 5,
-  },
+    backgroundColor: '#FFFFFF'
+  }
 });
+
+module.exports = VerbozeMobile;
