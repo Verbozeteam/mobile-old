@@ -44,16 +44,12 @@ class GenericSlider extends React.Component<PropsType, StateType> {
 
   static defaultProps = {
     orientation: 'horizontal',
-    value: 0,
+    value: 50,
     maximum: 100,
     minimum: 0,
     round: (value) => Math.round(value),
     onMove: () => null,
     onRelease: () => null,
-    layout: {
-      height: 70,
-      width: 250
-    },
     fontColor: '#FFFFFF',
     sliderGradient: ['#36DBFD', '#178BFB'],
     backgroundColor: '#181B31',
@@ -68,6 +64,10 @@ class GenericSlider extends React.Component<PropsType, StateType> {
     touch_start_value: 0
   };
 
+  /* default height and width for slider if non provided through props */
+  _default_height: number = 70;
+  _default_width: number = 250;
+
   /* info: only calculated once using layout in props, if layout changes
      these do not update unless the component is remounted */
   _container_layout: LayoutType | StyleType;
@@ -78,7 +78,8 @@ class GenericSlider extends React.Component<PropsType, StateType> {
   _panResponder: Object;
 
   componentWillMount() {
-    const { layout, sliderMargin } = this.props;
+    const { orientation, sliderMargin } = this.props;
+    var { layout } = this.props;
 
     /* create touch responder */
     this._panResponder = PanResponder.create({
@@ -92,6 +93,16 @@ class GenericSlider extends React.Component<PropsType, StateType> {
       onPanResponderRelease: this._onPanResponderRelease.bind(this)
     });
 
+    /* layout has not been passed through props, fallback to default */
+    if (!layout) {
+      layout = {
+        height: (orientation === 'horizontal') ?
+          this._default_height : this._default_width,
+        width: (orientation === 'horizontal') ?
+          this._default_width : this._default_height
+      }
+    }
+
     this._container_layout = {
       height: layout.height,
       width: layout.width,
@@ -99,11 +110,17 @@ class GenericSlider extends React.Component<PropsType, StateType> {
     };
 
     this._slider_layout = {
-      height: layout.height - sliderMargin * 2,
-      top: sliderMargin,
       left: sliderMargin,
+      bottom: sliderMargin,
       borderRadius: (layout.height - sliderMargin * 2) / 2
     };
+
+    if (orientation === 'horizontal') {
+      this._slider_layout.height = layout.height - sliderMargin * 2;
+    }
+    else {
+      this._slider_layout.width = layout.width - sliderMargin * 2;
+    }
 
     this.calculateSliderRatio();
   }
@@ -119,11 +136,17 @@ class GenericSlider extends React.Component<PropsType, StateType> {
   }
 
   _onPanResponderMove(evt: Object, gestureState: {dx: number, dy: number}) {
-    const { maximum, minimum, round, onMove } = this.props;
+    const { orientation, maximum, minimum, round, onMove } = this.props;
     const { touch_value, touch_start_value } = this.state;
 
     /* calculate gesture distance and limit value to remain within range */
-    var new_value: number = touch_start_value + (gestureState.dx / this._ratio);
+    var new_value: number;
+    if (orientation === 'horizontal') {
+      new_value = touch_start_value + (gestureState.dx / this._ratio);
+    }
+    else {
+      new_value = touch_start_value - (gestureState.dy / this._ratio);
+    }
     var rounded_new_value: number = round(new_value);
 
     if (new_value > maximum) {
@@ -157,13 +180,21 @@ class GenericSlider extends React.Component<PropsType, StateType> {
   }
 
   calculateSliderRatio() {
-    const { maximum, minimum, round, layout, sliderMargin } = this.props;
-    this._ratio = (layout.width - sliderMargin * 2) / (maximum - minimum);
+    const { orientation, maximum, minimum, round, sliderMargin } = this.props;
+
+    if (orientation === 'horizontal') {
+      this._ratio = (this._container_layout.width - sliderMargin * 2) /
+        (maximum - minimum);
+    }
+    else {
+      this._ratio = (this._container_layout.height - sliderMargin * 2) /
+        (maximum - minimum);
+    }
   }
 
   render() {
-    const { minimum, round, fontColor, sliderGradient, backgroundColor }
-      = this.props;
+    const { orientation, minimum, round, fontColor, sliderGradient,
+      backgroundColor } = this.props;
     var { value } = this.props;
     const { touch, touch_value } = this.state;
 
@@ -172,16 +203,21 @@ class GenericSlider extends React.Component<PropsType, StateType> {
       value = touch_value;
     }
 
-    const slider_width: LayoutType = {
-      width: (value - minimum) * this._ratio
-    };
+    const slider_size: LayoutType = {};
+    if (orientation === 'horizontal') {
+      slider_size.width = (value - minimum) * this._ratio;
+    }
+    else {
+      slider_size.height = (value - minimum) * this._ratio;
+    }
 
     return (
       <View style={[this._container_layout, {backgroundColor}]}>
-        <View {...this._panResponder.panHandlers}>
+        <View {...this._panResponder.panHandlers}
+          style={styles.slider_container}>
           <LinearGradient colors={sliderGradient}
             start={{x: 1, y: 0}} end={{x: 0, y: 1}}
-            style={[this._slider_layout, slider_width]}>
+            style={[styles.slider, this._slider_layout, slider_size]}>
           </LinearGradient>
 
           <View style={styles.value_container}>
@@ -196,8 +232,21 @@ class GenericSlider extends React.Component<PropsType, StateType> {
 }
 
 const styles = StyleSheet.create({
+  slider_container: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0)'
+  },
+  slider: {
+    position: 'absolute'
+  },
   value_container: {
     position: 'absolute',
+    top: 0,
+    left: 0,
     height: '100%',
     width: '100%',
     alignItems: 'center',
