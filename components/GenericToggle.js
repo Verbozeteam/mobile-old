@@ -1,11 +1,12 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, Animated, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+import { View, Text, Animated, TouchableWithoutFeedback, StyleSheet }
+  from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
-import type { LayoutType } from './config/flowtypes';
+import type { LayoutType, StyleType } from './config/flowtypes';
 
 type PropsType = {
   // TODO: support vertical, will do once needed though
@@ -47,22 +48,20 @@ class GenericToggle extends React.Component<PropsType> {
   };
 
   /* animated offset of the toggle selector */
-  _animation_position;
+  _animation_position: Object;
 
-  /* warning: only calculated once using layout in props, if layout changes
+  /* info: only calculated once using layout in props, if layout changes
      these do not update unless the component is remounted */
-  _container_layout: LayoutType;
-  _selected_layout: LayoutType;
+  _container_layout: LayoutType | StyleType;
+  _selected_layout: LayoutType | StyleType;
 
 
-  /* warning: only created once, if values change or actions changes update
+  /* info: only created once, if values change or actions changes update
      won't show until component is remounted */
-  _values: Array = [];
+  _values: Array<React.ComponentType> = [];
 
-  constructor(props: PropsType) {
-    super(props);
-
-    const { layout, values, selectedMargin, selected } = props;
+  componentWillMount() {
+    const { layout, values, selectedMargin } = this.props;
 
     this._container_layout = {
       height: layout.height,
@@ -87,23 +86,26 @@ class GenericToggle extends React.Component<PropsType> {
   createValues() {
     const { values, actions, selectedMargin, fontColor } = this.props;
 
+    /* loop through all values provided and create respective JSX */
     for (var i = 0; i < values.length; i++) {
-      const action = actions[i];
+      const action: () => null = actions[i];
 
-      const value_style = {
+      const value_style: StyleType = {
         color: fontColor
       };
 
+      /* create left or right margin if value is first or last */
       if (i === 0) {
         value_style.marginLeft = selectedMargin;
-      } else if (i === values.length - 1) {
+      }
+      else if (i === values.length - 1) {
         value_style.marginRight = selectedMargin;
       }
 
       this._values.push(
         <TouchableWithoutFeedback key={'value' + i}
           onPressIn={() => action()}>
-          <View style={styles.value_container}>
+          <View style={styles.value}>
             <Text style={[styles.value_text, value_style]}>
               {values[i]}
             </Text>
@@ -116,10 +118,11 @@ class GenericToggle extends React.Component<PropsType> {
   calculateAnimationPosition() {
     const { selected, selectedMargin, values } = this.props;
 
-    var position = this._selected_layout.width * selected;
+    var position: number = this._selected_layout.width * selected;
     if (selected === 0) {
       position += selectedMargin;
-    } else if (selected === values.length - 1) {
+    }
+    else if (selected === values.length - 1) {
       position -= selectedMargin;
     }
 
@@ -130,19 +133,17 @@ class GenericToggle extends React.Component<PropsType> {
   }
 
   render() {
-    const { orientation, selected, values, actions, layout, fontColor,
-      selectedGradient, backgroundColor, selectedMargin, nightMode }
-       = this.props;
+    const { selectedGradient, backgroundColor } = this.props;
 
     /* calculate animation position of toggle selector */
     this.calculateAnimationPosition();
 
-    const selected_position = {
+    const selected_position: LayoutType = {
       left: this._animation_position
     };
 
     return (
-      <View style={[this._container_layout, {backgroundColor: backgroundColor}]}>
+      <View style={[this._container_layout, {backgroundColor}]}>
         <Animated.View style={selected_position}>
           <LinearGradient colors={selectedGradient}
             start={{x: 1, y: 0}} end={{x: 0, y: 1}}
@@ -165,7 +166,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
   },
-  value_container: {
+  value: {
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center'

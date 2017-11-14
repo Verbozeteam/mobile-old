@@ -6,3 +6,10 @@ export type LayoutType = {
   top?: number,
   left?: number
 };
+
+export type StyleType = {
+  color?: string,
+  backgroundColor?: string,
+  borderColor?: string,
+  borderRadius?: string
+};
