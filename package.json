@@ -10,7 +10,9 @@
 	"dependencies": {
 		"react": "16.0.0",
 		"react-native": "0.50.3",
-		"react-native-linear-gradient": "^2.3.0"
+		"react-native-linear-gradient": "^2.3.0",
+		"react-native-svg": "^5.5.1",
+		"reconnecting-websocket": "^3.2.2"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",

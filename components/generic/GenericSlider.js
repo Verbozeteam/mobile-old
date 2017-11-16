@@ -11,11 +11,12 @@ type PropsType = {
   // TODO: support vertical, will do once needed
   orientation?: 'vertical' | 'horizontal',
 
-  /* provide maximum and minimum inclusive value range along with handlers */
+  /* provide maximum and minimum inclusive value range and round function */
   value?: number,
   maximum?: number,
   minimum?: number,
   round?: (value: number) => number,
+  onStart?: () => null,
   /* onMove doesn't necessarily need to update value passed through props -
      slider live updates on it's own */
   onMove?: (value: number) => null,
@@ -48,6 +49,7 @@ class GenericSlider extends React.Component<PropsType, StateType> {
     maximum: 100,
     minimum: 0,
     round: (value) => Math.round(value),
+    onStart: () => null,
     onMove: () => null,
     onRelease: () => null,
     fontColor: '#FFFFFF',
@@ -60,7 +62,6 @@ class GenericSlider extends React.Component<PropsType, StateType> {
   state = {
     touch: false,
     touch_value: 0,
-    touch_exact_value: 0,
     touch_start_value: 0
   };
 
@@ -133,6 +134,9 @@ class GenericSlider extends React.Component<PropsType, StateType> {
       touch_value: value,
       touch_start_value: value
     });
+
+    /* call provided onStart handler */
+    onStart();
   }
 
   _onPanResponderMove(evt: Object, gestureState: {dx: number, dy: number}) {
