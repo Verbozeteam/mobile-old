@@ -16,7 +16,8 @@ type State = {};
 class VerbozeMobile extends React.Component<PropsType, StateType> {
 
   state = {
-    toggle: 0,
+    toggle1: 0,
+    toggle2: 2,
     dimmer: 50,
   };
 
@@ -27,41 +28,41 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
   _ws: Object = null;
 
   componentDidMount() {
-    const ws_url = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98';
-    this._ws = new ReconnectingWebsocket(ws_url);
-
-    this._ws.onopen = () => {
-      console.log('websocket connected.');
-
-      this._ws.send(JSON.stringify({
-        code: 0
-      }));
-    }
-
-    this._ws.onclose = () => {
-      console.log('websocket disconnected.');
-    }
-
-    this._ws.onerror = (error) => {
-      console.log('websocket error: ' + error);
-    }
-
-    this._ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      try {
-        this.setState({
-          toggle1: 1 - data[this.toggle_id].intensity
-        });
-      }
-      catch(e) {}
-
-      try {
-        this.setState({
-          dimmer: data[this.dimmer_id].intensity
-        });
-      }
-      catch(e) {}
-    }
+    // const ws_url = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98';
+    // this._ws = new ReconnectingWebsocket(ws_url);
+    //
+    // this._ws.onopen = () => {
+    //   console.log('websocket connected.');
+    //
+    //   this._ws.send(JSON.stringify({
+    //     code: 0
+    //   }));
+    // }
+    //
+    // this._ws.onclose = () => {
+    //   console.log('websocket disconnected.');
+    // }
+    //
+    // this._ws.onerror = (error) => {
+    //   console.log('websocket error: ' + error);
+    // }
+    //
+    // this._ws.onmessage = (event) => {
+    //   const data = JSON.parse(event.data);
+    //   try {
+    //     this.setState({
+    //       toggle1: 1 - data[this.toggle_id].intensity
+    //     });
+    //   }
+    //   catch(e) {}
+    //
+    //   try {
+    //     this.setState({
+    //       dimmer: data[this.dimmer_id].intensity
+    //     });
+    //   }
+    //   catch(e) {}
+    // }
   }
 
   _toggleOn() {
@@ -70,7 +71,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
       toggle1: 0
     });
 
-    this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 1}));
+    // this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 1}));
   }
 
   _toggleOff() {
@@ -79,7 +80,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
       toggle1: 1
     });
 
-    this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 0}));
+    // this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 0}));
   }
 
   _onMove(v) {
@@ -109,6 +110,20 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
         onRelease={this._onRelease.bind(this)} />
     );
 
+    const toggle2_actions = [
+      () => {this.setState({toggle2: 0})},
+      () => {this.setState({toggle2: 1})},
+      () => {this.setState({toggle2: 2})},
+      () => {this.setState({toggle2: 3})}
+    ];
+
+    const toggle2 = (
+      <GenericToggle selected={this.state.toggle2}
+          values={['Off', 'Low', 'Mid', 'High']}
+          actions={toggle2_actions}
+          layout={{width: 370, height: 70}} />
+    );
+
     const demo_circular = (
       <GenericCircularSlider />
     );
@@ -116,6 +131,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
     return (
       <View style={styles.container}>
         {demo_toggle}
+        {toggle2}
       </View>
     );
   }
