@@ -1,8 +1,8 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, Animated, TouchableWithoutFeedback, StyleSheet }
-  from 'react-native';
+import { View, Text, Animated, TouchableWithoutFeedback, PanResponder,
+   StyleSheet } from 'react-native';
 
 import LinearGradient from 'react-native-linear-gradient';
 
@@ -60,8 +60,25 @@ class GenericToggle extends React.Component<PropsType> {
      won't show until component is remounted */
   _values: Array<React.ComponentType> = [];
 
+  /* touch responder */
+  _panResponder: Object;
+
+  /* component x-axis position relative to screen */
+  _x_pos: number;
+
   componentWillMount() {
     const { layout, values, selectedMargin } = this.props;
+
+    /* create touch responder */
+    this._panResponder = PanResponder.create({
+      onStartShouldSetPanResponder: (evt, gestureState) => true,
+      onStartShouldSetPanResponderCapture: (evt, gestureState) => true,
+      onMoveShouldSetPanResponder: (evt, gestureState) => true,
+      onMoveShouldSetPanResponderCapture: (evt, gestureState) => true,
+
+      onPanResponderMove: this._onPanResponderMoveOrRelease.bind(this),
+      onPanResponderRelease: this._onPanResponderMoveOrRelease.bind(this)
+    });
 
     this._container_layout = {
       height: layout.height,
@@ -83,17 +100,38 @@ class GenericToggle extends React.Component<PropsType> {
     this.createValues();
   }
 
+  _onPanResponderMoveOrRelease(evt: Object, gestureState: {moveX: number}) {
+    const { selected, actions } = this.props;
+
+    /* get index of toggle position of touch x position */
+    const x = gestureState.moveX - this._x_pos;
+    var index = Math.floor(x / this._selected_layout.width);
+
+
+    /* if index out of bounds set within bounds */
+    if (index >= this._values.length) {
+      index = this._values.length - 1;
+    }
+
+    else if (index < 0) {
+      index = 0;
+    }
+
+    /* only call action if index has changes */
+    if (index !== selected) {
+      actions[index]();
+    }
+
+  }
+
   createValues() {
-    const { values, actions, selectedMargin, fontColor } = this.props;
+    const { values, selectedMargin, fontColor } = this.props;
 
     /* loop through all values provided and create respective JSX */
     for (var i = 0; i < values.length; i++) {
-      const action: () => null = actions[i];
-
       const value_style: StyleType = {
         color: fontColor
       };
-
       /* create left or right margin if value is first or last */
       if (i === 0) {
         value_style.marginLeft = selectedMargin;
@@ -103,14 +141,11 @@ class GenericToggle extends React.Component<PropsType> {
       }
 
       this._values.push(
-        <TouchableWithoutFeedback key={'value' + i}
-          onPressIn={() => action()}>
-          <View style={styles.value}>
-            <Text style={[styles.value_text, value_style]}>
-              {values[i]}
-            </Text>
-          </View>
-        </TouchableWithoutFeedback>
+        <View key={'value' + i} style={styles.value}>
+          <Text style={[styles.value_text, value_style]}>
+            {values[i]}
+          </Text>
+        </View>
       );
     }
   }
@@ -132,6 +167,10 @@ class GenericToggle extends React.Component<PropsType> {
     }).start();
   }
 
+  _onLayout(event: Object) {
+    this._x_pos = event.nativeEvent.layout.x;
+  }
+
   render() {
     const { selectedGradient, backgroundColor } = this.props;
 
@@ -143,7 +182,9 @@ class GenericToggle extends React.Component<PropsType> {
     };
 
     return (
-      <View style={[this._container_layout, {backgroundColor}]}>
+      <View {...this._panResponder.panHandlers}
+        onLayout={this._onLayout.bind(this)}
+        style={[this._container_layout, {backgroundColor}]}>
         <Animated.View style={selected_position}>
           <LinearGradient colors={selectedGradient}
             start={{x: 1, y: 0}} end={{x: 0, y: 1}}
