@@ -16,8 +16,6 @@ type State = {};
 class VerbozeMobile extends React.Component<PropsType, StateType> {
 
   state = {
-    toggle1: 0,
-    toggle2: 2,
     dimmer: 50,
   };
 
@@ -85,7 +83,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
 
   _onMove(v) {
 
-    this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
+    // this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
   }
 
   _onRelease(v) {
@@ -93,7 +91,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
       dimmer: v
     });
 
-    this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
+    // this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
   }
 
   render() {
@@ -110,19 +108,6 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
         onRelease={this._onRelease.bind(this)} />
     );
 
-    const toggle2_actions = [
-      () => {this.setState({toggle2: 0})},
-      () => {this.setState({toggle2: 1})},
-      () => {this.setState({toggle2: 2})},
-      () => {this.setState({toggle2: 3})}
-    ];
-
-    const toggle2 = (
-      <GenericToggle selected={this.state.toggle2}
-          values={['Off', 'Low', 'Mid', 'High']}
-          actions={toggle2_actions}
-          layout={{width: 370, height: 70}} />
-    );
 
     const demo_circular = (
       <GenericCircularSlider />
@@ -130,8 +115,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
 
     return (
       <View style={styles.container}>
-        {demo_toggle}
-        {toggle2}
+        {demo_slider}
       </View>
     );
   }
