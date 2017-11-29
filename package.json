@@ -8,11 +8,14 @@
 		"flow": "flow"
 	},
 	"dependencies": {
-		"react": "^16.1.1",
-		"react-native": "^0.50.3",
+		"prop-types": "^15.6.0",
+		"react": "^16.2.0",
+		"react-native": "^0.50.4",
 		"react-native-linear-gradient": "^2.3.0",
 		"react-native-svg": "^5.5.1",
-		"reconnecting-websocket": "^3.2.2"
+		"react-redux": "^5.0.6",
+		"reconnecting-websocket": "^3.2.2",
+		"redux": "^3.7.2"
 	},
 	"devDependencies": {
 		"babel-cli": "^6.26.0",
@@ -21,7 +24,7 @@
 		"babel-preset-react-native": "4.0.0",
 		"flow-bin": "0.56.0",
 		"jest": "21.2.1",
-		"react-test-renderer": "16.0.0"
+		"react-test-renderer": "^16.2.0"
 	},
 	"jest": {
 		"preset": "react-native"
