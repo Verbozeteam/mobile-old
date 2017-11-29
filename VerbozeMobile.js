@@ -2,128 +2,117 @@
 
 import * as React from 'react';
 import { View, Text, AppRegistry, StyleSheet } from 'react-native';
+import PropTypes from 'prop-types';
+import { connect as ReduxConnect } from 'react-redux';
 
-const ReconnectingWebsocket = require('reconnecting-websocket');
+const WebSocketCommunication = require('./lib/WebSocketCommunication');
 
-const GenericToggle = require('./react-components/GenericToggle');
-const GenericSlider = require('./react-components/GenericSlider');
+const ConnectionActions = require('./actions/connection');
+const ThingsActions = require('./actions/things');
 
-const LightDimmer = require('./react-components/LightDimmer');
-const LightSwitch = require('./react-components/LightSwitch');
-const ACControl = require('./react-components/ACControl');
+const Room = require('./components/Room');
+
+// TODO: globally define this
+type WebSocketDataType = {
+
+};
+
+function mapStateToProps(state) {
+  return {
+    connection_state: state.connection.connection_state,
+    config: state.connection.config
+  };
+}
+
+function mapDispatchToProps(dispatch: Function) {
+  return {
+    setConnectionState: (connection_state: number) => {
+      dispatch(ConnectionActions.setConnectionState(connection_state));
+    },
+    setConfig: (config: Object) => {
+      dispatch(ConnectionActions.setConfig(config));
+    },
+    setThingsStates: (things_states: Object) => {
+      dispatch(ThingsActions.setThingsStates(things_states));
+    }
+  };
+}
 
 type PropsType = {};
 
-type State = {};
+type StateType = {
+
+};
 
 class VerbozeMobile extends React.Component<PropsType, StateType> {
 
-  state = {
-    dimmer: 50,
-  };
+  _ws_url: string = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98';
 
-  toggle_id = 'lightswitch-8';
-  dimmer_id = 'dimmer-v1';
-
-  // websocket
-  _ws: Object = null;
+  componentWillMount() {
+    /* bind websocket callbacks */
+    WebSocketCommunication.setOnConnected(this.onConnected.bind(this));
+    WebSocketCommunication.setOnDisconnected(this.onDisconnected.bind(this));
+    WebSocketCommunication.setOnMessage(this.onMessage.bind(this));
+  }
 
   componentDidMount() {
-    const ws_url = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98';
-    this._ws = new ReconnectingWebsocket(ws_url);
-
-    this._ws.onopen = () => {
-      console.log('websocket connected.');
-
-      this._ws.send(JSON.stringify({
-        code: 0
-      }));
-    }
-
-    this._ws.onclose = () => {
-      console.log('websocket disconnected.');
-    }
-
-    this._ws.onerror = (error) => {
-      console.log('websocket error: ' + error);
-    }
-
-    this._ws.onmessage = (event) => {
-      const data = JSON.parse(event.data);
-      try {
-        this.setState({
-          toggle1: 1 - data[this.toggle_id].intensity
-        });
-      }
-      catch(e) {}
-
-      try {
-        this.setState({
-          dimmer: data[this.dimmer_id].intensity
-        });
-      }
-      catch(e) {}
-    }
+    /* connect websocket */
+    this.connect();
   }
 
-  _toggleOn() {
-    console.log('toggle on');
-    this.setState({
-      toggle1: 0
+  /* websocket connect */
+  connect() {
+    const { setConnectionState } = this.props;
+
+    WebSocketCommunication.connect(this._ws_url);
+    setConnectionState(1);
+  }
+
+  /* websocket callback on connect event */
+  onConnected() {
+    const { setConnectionState } = this.props;
+    setConnectionState(2);
+
+    WebSocketCommunication.sendMessage({
+      code: 0
     });
-
-    this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 1}));
   }
 
-  _toggleOff() {
-    console.log('toggle off');
-    this.setState({
-      toggle1: 1
-    });
-
-    this._ws.send(JSON.stringify({thing: this.toggle_id, intensity: 0}));
+  /* websocket callback on disconnect event */
+  onDisconnected() {
+    const { setConnectionState } = this.props;
+    setConnectionState(0);
   }
 
-  _onMove(v) {
+  /* websocket callback on message event */
+  onMessage(data: WebSocketDataType) {
+    const { setConfig, setThingsStates } = this.props;
 
-    this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
-  }
+    /* set config if provided */
+    if ('config' in data) {
+      setConfig(data.config);
+      delete data['config'];
+    }
 
-  _onRelease(v) {
-    this.setState({
-      dimmer: v
-    });
-
-    this._ws.send(JSON.stringify({thing: this.dimmer_id, intensity: v}));
+    /* set things states if provided */
+    if (Object.keys(data).length > 0) {
+      setThingsStates(data);
+    }
   }
 
   render() {
+    const { connection_state, config } = this.props;
 
-    const demo_toggle = (
-      <GenericToggle selected={this.state.toggle1}
-        actions={[this._toggleOn.bind(this), this._toggleOff.bind(this)]} />
-    );
-
-    const demo_slider = (
-      <GenericSlider orientation={'horizontal'}
-        value={this.state.dimmer}
-        onMove={this._onMove.bind(this)}
-        onRelease={this._onRelease.bind(this)} />
-    );
-    //
-    //
-    // const demo_circular = (
-    //   <GenericCircularSlider />
-    // );
+    console.log(connection_state, config);
 
     return (
       <View style={styles.container}>
-        <ACControl />
-        {/* {demo_toggle} */}
-        {/* {demo_slider} */}
-        {/* <LightSwitch /> */}
-        {/* <LightDimmer update={() => null}/> */}
-        {/* <LightDimmer orientation={'horizontal'} update={() => null}/> */}
+        <View style={styles.top}>
+          <Room name={'QSTP ROOM'} index={0} />
+        </View>
+        <Text style={styles.connection}>
+          Connection: {connection_state}
+        </Text>
       </View>
     );
   }
@@ -132,10 +121,44 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#FFFFFF'
+    justifyContent: 'center',
+  },
+  top: {
+    flex: 1
+  },
+  connection: {
+    flex: 1
   }
 });
 
-module.exports = VerbozeMobile;
+VerbozeMobile.contextTypes = {
+  store: PropTypes.object
+};
+
+VerbozeMobile = ReduxConnect(mapStateToProps, mapDispatchToProps) (VerbozeMobile);
+
+/**
+ * Create the Redux store and srap the application in a Redux context
+ */
+
+import { createStore, combineReducers, bindActionCreators } from 'redux';
+import { Provider } from 'react-redux';
+
+const ConnectionReducer = require('./reducers/connection');
+const ThingsReducer = require('./reducers/things');
+
+const STORE = createStore(combineReducers({
+  connection: ConnectionReducer,
+  things: ThingsReducer
+}));
+
+class VerbozeMobileWrapper extends React.Component<any> {
+  render() {
+    return <Provider store={STORE}>
+      <VerbozeMobile />
+    </Provider>
+  }
+}
+
+module.exports = VerbozeMobileWrapper;

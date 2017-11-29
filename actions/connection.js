@@ -1,26 +1,20 @@
 /* @flow */
 
-export const CHANGE_CONNECTION_STATE = 'CHANGE_CONNECTION_STATE';
+export const SET_CONNECTION_STATE = 'SET_CONNECTION_STATE';
+export const SET_CONFIG = 'SET_CONFIG';
 
-export function changeConnectionState(is_connected: boolean) {
+/* set WebSocket connection state */
+export function setConnectionState(connection_state: number) {
   return {
-    type: CHANGE_CONNECTION_STATE,
-    is_connected
-  }
+    type: SET_CONNECTION_STATE,
+    connection_state
+  };
 };
 
-// export const CONNECT = 'connect';
-// export const DISCONNECT = 'disconnect';
-//
-// export function connect(url: string) {
-//   return {
-//     type: CONNECT,
-//     url
-//   };
-// };
-//
-// export function disconnect() {
-//   return {
-//     type: DISCONNECT
-//   };
-// };
+/* sets config */
+export function setConfig(config: object) {
+  return {
+    type: SET_CONFIG,
+    config
+  };
+};

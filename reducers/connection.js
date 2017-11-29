@@ -1,16 +1,33 @@
-import { CHANGE_CONNECTION_STATE } from '../actions/connection';
+/* @flow */
 
-const defaultState = {
-  is_connected: false,
+import { SET_CONNECTION_STATE,
+         SET_CONFIG }
+         from '../actions/connection';
+
+type StateType = {
+  connection_state: 0 | 1 | 2,
+  config: Object
+}
+
+const defaultState: StateType = {
+  /* 0 - not connected, 1 - connecting, 2 - connected */
+  connection_state: 0,
+  config: {}
 };
 
-module.exports = function(state=defaultState, action) {
-
-  var new_state = {...state};
+module.exports = (state: StateType = defaultState, action: Object) => {
+  var new_state: StateType = {...state};
 
   switch(action.type) {
-    case CHANGE_CONNECTION_STATE:
-      new_state.is_connected = action.is_connected;
+    /* set WebSocket connection state */
+    case SET_CONNECTION_STATE:
+      new_state.connection_state = action.connection_state;
+      break;
+
+    /* sets config */
+    case SET_CONFIG:
+      new_state.config = action.config;
+      break;
   }
 
   return new_state;
