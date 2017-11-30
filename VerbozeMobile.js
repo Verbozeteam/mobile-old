@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, AppRegistry, StyleSheet } from 'react-native';
+import { View, Text, AppRegistry, StyleSheet, Platform } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
@@ -10,11 +10,11 @@ const WebSocketCommunication = require('./lib/WebSocketCommunication');
 const ConnectionActions = require('./actions/connection');
 const ThingsActions = require('./actions/things');
 
-const RoomsView = require('./components/RoomsView');
+import Navigation from './navigation/Navigation';
 
 import { WebSocketDataType, ConfigType } from './config/ConnectionTypes';
 
-function mapStateToProps(state) {
+function mapStateToProps(state: Object) {
   return {
     connection_state: state.connection.connection_state,
     config: state.connection.config
@@ -38,6 +38,8 @@ function mapDispatchToProps(dispatch: Function) {
 class VerbozeMobile extends React.Component<any, any> {
   _ws_url: string = 'wss://www.verboze.com/stream/';
   _ws_token: string = '35b4d595ef074543a2fa686650024d98';
+
+  _Navigation: React.Component;
 
   componentWillMount() : any {
     /* bind websocket callbacks */
@@ -93,35 +95,13 @@ class VerbozeMobile extends React.Component<any, any> {
   }
 
   render() {
-    const { connection_state, config } = this.props;
-
     return (
-      <View style={styles.container}>
-        <View style={styles.top}>
-          <RoomsView config={config}/>
-        </View>
-        <Text style={styles.connection}>
-          Connection: {connection_state}
-        </Text>
-      </View>
+      <Navigation />
     );
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  top: {
-    flex: 1,
-    width: '100%',
-  },
-  connection: {
-    width: '100%',
-  }
-});
+const styles = StyleSheet.create({});
 
 VerbozeMobile.contextTypes = {
   store: PropTypes.object

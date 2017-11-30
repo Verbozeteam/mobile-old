@@ -9,14 +9,19 @@ const Room = require('./Room');
 
 import { ConfigType } from '../config/ConnectionTypes';
 
-type PropsType = {
-  config: ConfigType,
-};
+function mapStateToProps(state: Object) {
+  return {
+    config: state.connection.config
+  };
+}
 
-type StateType = {
-};
+function mapDispatchToProps(dispatch: Function) {
+  return {
 
-class RoomsView extends React.Component<PropsType, StateType> {
+  };
+}
+
+class RoomsView extends React.Component<any, any> {
 
   render() {
     const { config } = this.props;
@@ -43,6 +48,8 @@ class RoomsView extends React.Component<PropsType, StateType> {
 RoomsView.contextTypes = {
   store: PropTypes.object
 };
+
+RoomsView = ReduxConnect(mapStateToProps, mapDispatchToProps) (RoomsView);
 
 const styles = StyleSheet.create({
   container: {
