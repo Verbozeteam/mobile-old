@@ -25,15 +25,16 @@ class RoomsView extends React.Component<PropsType, StateType> {
     if (config.rooms) {
       for (var i = 0; i < config.rooms.length; i++) {
         rooms.push(
-          <Room key={'room-view-'+i}
-            roomConfig={config.rooms[i]} />
+          <View key={'room-card-'+i}>
+            <Room roomConfig={config.rooms[i]} />
+          </View>
         );
       }
     }
 
     return (
       <View style={styles.container}>
-        {rooms}
+        {rooms[0]}
       </View>
     );
   }
@@ -45,7 +46,9 @@ RoomsView.contextTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
+    margin: 20,
+    flex: 1,
+    flexDirection: 'column',
   },
 });
 
