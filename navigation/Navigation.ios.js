@@ -1,6 +1,6 @@
 /* @flow */
 
 import { TabNavigator } from 'react-navigation';
-const { structure } = require('./structure');
+const { structure, options } = require('./structure');
 
-export default TabNavigator(structure);
+export default TabNavigator(structure, options);
