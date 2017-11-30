@@ -30,7 +30,7 @@ function mapDispatchToProps(dispatch: Function) {
       dispatch(ConnectionActions.setConfig(config));
     },
     setThingsStates: (things_states: Object) => {
-      dispatch(ThingsActions.setThingsStates(things_states));
+      dispatch(ThingsActions.set_things_states(things_states));
     }
   };
 }

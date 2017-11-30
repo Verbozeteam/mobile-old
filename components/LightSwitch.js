@@ -1,74 +1,98 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
-import PropTypes from 'prop-types';
-import { connect as ReduxConnect } from 'react-redux';
 
-type PropsType = {
-  id: string
-};
+import PropTypes from 'prop-types';
+import { View, Image, TouchableWithoutFeedback, StyleSheet } from 'react-native';
+
+import type { ViewType } from '../config/flowtypes';
+
+const thingsActions = require('../actions/things');
+const SocketCommunication = require('../lib/WebSocketCommunication');
+
+const I18n = require('../i18n/i18n');
 
 type StateType = {
-  intensity: number
+    intensity: number,
+};
+
+type PropsType = {
+    id: string,
+    viewType: ViewType,
 };
 
 class LightSwitch extends React.Component<PropsType, StateType> {
+    _unsubscribe: () => null = () => {return null;};
 
-  state = {
-    intensity: 0
-  };
+    state = {
+        intensity: 0,
+    };
 
-  componentWillMount() {
-    const { store } = this.context;
-    this._unsubscribe = store.subscribe(this.onReduxStateChange.bind(this));
-    this.onReduxStateChange();
-  }
+    _light_bulb_img_on = require('../assets/images/lighton.png');
+    _light_bulb_img_off = require('../assets/images/lightoff.png');
 
-  onReduxStateChange() {
-    const { store } = this.context;
-    const redux_state = store.getStore();
-    const { intensity } = this.state;
-    const { id } = this.props;
-
-    try {
-      const new_intensity = redux_state.things.thing_state[id].intensity;
-
-      if (new_intensity!= undefined) {
-        this.setState({
-          intensity: new_intensity
-        });
-      }
+    componentWillMount() {
+        const { store } = this.context;
+        this._unsubscribe = store.subscribe(this.onReduxStateChanged.bind(this));
+        this.onReduxStateChanged();
     }
 
-    catch(e) {}
-  }
+    componentWillUnmount() {
+        this._unsubscribe();
+    }
 
-  changeIntensity(intensity: number) {
-    const { id } = this.props;
+    onReduxStateChanged() {
+        const { store } = this.context;
+        const reduxState = store.getState();
+        const { intensity } = this.state;
+        const { id } = this.props;
 
-    this.context.store.dispatch(ConnectionActions.setThingPartialState(
-      id, {intensity}
-    ));
-  }
+        if (reduxState && reduxState.things && reduxState.things.things_states) {
+            const my_redux_state = reduxState.things.things_states[id];
+            if (my_redux_state && my_redux_state.intensity != undefined && my_redux_state.intensity != intensity) {
+                this.setState({intensity: my_redux_state.intensity});
+            }
+        }
+    }
 
-  render() {
-    return (
-      <View style={styles.container}>
+    changeIntensity(intensity: number) {
+        SocketCommunication.sendMessage({
+            thing: this.props.id,
+            intensity
+        });
+        this.context.store.dispatch(thingsActions.set_thing_partial_state(this.props.id, {intensity}));
+    }
 
-      </View>
-    );
-  }
+    render() {
+        const { id, viewType } = this.props;
+        const { intensity } = this.state;
+        const light_bulb_img = intensity ? this._light_bulb_img_on : this._light_bulb_img_off;
+
+        var on_press = () => {};
+        if (viewType === 'detail')
+            on_press = (() => this.changeIntensity(1-this.state.intensity)).bind(this);
+
+        return (
+            <TouchableWithoutFeedback
+                onPressIn={on_press}>
+                <Image style={styles.light_bulb}
+                    resizeMode='contain'
+                    source={light_bulb_img}>
+                </Image>
+            </TouchableWithoutFeedback>
+        );
+    }
 }
-
 LightSwitch.contextTypes = {
-  store: PropTypes.object
+    store: PropTypes.object
 };
 
 const styles = StyleSheet.create({
-  container: {
-
-  }
+    light_bulb: {
+        flex: 1,
+        width: undefined,
+        height: undefined,
+    },
 });
 
 module.exports = LightSwitch;
