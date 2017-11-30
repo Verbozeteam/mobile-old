@@ -3,18 +3,19 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
-// const LightDimmer = require('./LightDimmer');
+const LightDimmer = require('./LightDimmer');
 const LightSwitch = require('./LightSwitch');
-// const PresetsSwitch = require('./PresetsSwitch');
+//const PresetsSwitch = require('./PresetsSwitch');
 
 const I18n = require('../i18n/i18n');
 
-import type { ViewType } from '../config/flowtypes';
+import type { ViewType, LayoutType } from '../config/flowtypes';
 import type { GenericThingType } from '../config/ConnectionTypes';
 
 type PropsType = {
     things: Array<GenericThingType>,
     viewType: ViewType,
+    layout: LayoutType,
     presets?: Array<Object>,
 };
 
@@ -24,14 +25,9 @@ class LightsPanel extends React.Component<PropsType>  {
 
         var dimmer_name = '';
         var slider_width = layout.width - 20;
-        var slider_height = 60;
-        if (viewType == 'detail') {
+        var slider_height = 30;
+        if (viewType === 'detail')
             dimmer_name = I18n.t(dimmer.name.en);
-            slider_height = 90;
-            slider_width *= (3/4);
-        } else if (layout.height <= 300) {
-            slider_width *= 0.5;
-        }
 
         return <View
             key={dimmer.id+'-container'}
@@ -101,7 +97,7 @@ class LightsPanel extends React.Component<PropsType>  {
         var switches = [];
         for (var i = 0; i < things.length; i++) {
             if (things[i].category === 'dimmers')
-                {}//dimmers.push(this.renderDimmer(things[i]));
+                dimmers.push(this.renderDimmer(things[i]));
             else
                switches.push(this.renderLightSwitch(things[i]));
         }
@@ -126,17 +122,10 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
     },
-    container_sm: {
-        flex: 1,
-        flexDirection: 'row',
-    },
     switches_container: {
         flexDirection: 'row',
-        flex: 2,
-    },
-    switches_container_sm: {
-        flexDirection: 'row',
         flex: 1,
+        height: 100,
     },
 });
 

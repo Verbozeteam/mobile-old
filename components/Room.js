@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, ScrollView, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
@@ -31,6 +31,7 @@ class Room extends React.Component<PropsType, StateType> {
             <LightsPanel
               things={panel.things}
               viewType={'collapsed'}
+              layout={{width: Dimensions.get('window').width - 40, height: 24}}
               presets={panel.presets}/>
           );
         case 'hotel_controls':
@@ -86,7 +87,6 @@ const styles = StyleSheet.create({
     height: 50,
     fontSize: 32,
     marginLeft: 10,
-
   },
   cardholder: {
     flex: 1,
@@ -102,6 +102,7 @@ const styles = StyleSheet.create({
   },
   card_name: {
     fontSize: 20,
+    marginBottom: 10,
   },
 });
 

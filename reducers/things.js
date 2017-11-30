@@ -20,24 +20,24 @@ module.exports = (state: Object = defaultState, action: Object): Object => {
 
   switch(action.type) {
     case SET_THING_STATE:
-      new_state.thingStates[action.thingId] = action.state;
+      new_state.things_states[action.thingId] = action.state;
       break;
     case SET_THINGS_STATES:
-      new_state.thingStates = {
-        ...new_state.thingStates,
+      new_state.things_states = {
+        ...new_state.things_states,
         ...action.thingsToStates
       };
       break;
     case SET_THING_PARTIAL_STATE:
-      new_state.thingStates[action.thingId] = {
-        ...new_state.thingStates[action.thingId],
+      new_state.things_states[action.thingId] = {
+        ...new_state.things_states[action.thingId],
         ...action.state
       };
       break;
     case SET_THINGS_PARTIAL_STATES:
       for (var k in action.thingsToPartialStates)
-        new_state.thingStates[k] = {
-          ...new_state.thingStates[k],
+        new_state.things_states[k] = {
+          ...new_state.things_states[k],
           ...action.thingsToPartialStates[k],
         };
       break;
