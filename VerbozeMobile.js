@@ -10,12 +10,10 @@ const WebSocketCommunication = require('./lib/WebSocketCommunication');
 const ConnectionActions = require('./actions/connection');
 const ThingsActions = require('./actions/things');
 
-const Room = require('./components/Room');
+const RoomsView = require('./components/RoomsView');
 
 // TODO: globally define this
-type WebSocketDataType = {
-
-};
+import { WebSocketDataType } from './config/ConnectionTypes';
 
 function mapStateToProps(state) {
   return {
@@ -38,30 +36,31 @@ function mapDispatchToProps(dispatch: Function) {
   };
 }
 
-type PropsType = {};
+type PropsType = {
+  ...any,
+};
 
 type StateType = {
-
 };
 
 class VerbozeMobile extends React.Component<PropsType, StateType> {
 
-  _ws_url: string = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98';
+  _ws_url: string = 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98/';
 
-  componentWillMount() {
+  componentWillMount() : any {
     /* bind websocket callbacks */
     WebSocketCommunication.setOnConnected(this.onConnected.bind(this));
     WebSocketCommunication.setOnDisconnected(this.onDisconnected.bind(this));
     WebSocketCommunication.setOnMessage(this.onMessage.bind(this));
   }
 
-  componentDidMount() {
+  componentDidMount() : any {
     /* connect websocket */
     this.connect();
   }
 
   /* websocket connect */
-  connect() {
+  connect() : any {
     const { setConnectionState } = this.props;
 
     WebSocketCommunication.connect(this._ws_url);
@@ -69,7 +68,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
   }
 
   /* websocket callback on connect event */
-  onConnected() {
+  onConnected() : any {
     const { setConnectionState } = this.props;
     setConnectionState(2);
 
@@ -79,17 +78,18 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
   }
 
   /* websocket callback on disconnect event */
-  onDisconnected() {
+  onDisconnected() : any {
     const { setConnectionState } = this.props;
     setConnectionState(0);
   }
 
   /* websocket callback on message event */
-  onMessage(data: WebSocketDataType) {
+  onMessage(data: WebSocketDataType) : any {
     const { setConfig, setThingsStates } = this.props;
 
     /* set config if provided */
     if ('config' in data) {
+      console.log("got config: ", data.config);
       setConfig(data.config);
       delete data['config'];
     }
@@ -108,7 +108,7 @@ class VerbozeMobile extends React.Component<PropsType, StateType> {
     return (
       <View style={styles.container}>
         <View style={styles.top}>
-          <Room name={'QSTP ROOM'} index={0} />
+          <RoomsView name={'QSTP ROOM'} index={0} />
         </View>
         <Text style={styles.connection}>
           Connection: {connection_state}
