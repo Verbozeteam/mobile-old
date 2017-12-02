@@ -79,7 +79,7 @@ class TopBar extends React.Component<PropsType, StateType> {
     return (
       <View style={[styles.container, {backgroundColor}]}>
         <View style={styles.column}>
-
+          <Text>{this.connectionStateString()}</Text>
         </View>
         <View style={styles.column}>
           <View style={styles.hotel_logo}>
