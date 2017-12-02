@@ -10,8 +10,8 @@ export function ViewWrapper(ChildView) {
     render() {
       return (
         <View style={styles.contianer}>
-          <TopBar />
-          <ChildView />
+          <TopBar {...this.props}/>
+          <ChildView/>
         </View>
       );
     }

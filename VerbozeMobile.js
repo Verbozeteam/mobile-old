@@ -96,12 +96,18 @@ class VerbozeMobile extends React.Component<any, any> {
 
   render() {
     return (
-      <Navigation />
+      <View style={styles.container}>
+        <Navigation />
+      </View>
     );
   }
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1
+  }
+});
 
 VerbozeMobile.contextTypes = {
   store: PropTypes.object
