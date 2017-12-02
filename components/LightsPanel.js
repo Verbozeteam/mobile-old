@@ -102,9 +102,9 @@ class LightsPanel extends React.Component<PropsType>  {
                switches.push(this.renderLightSwitch(things[i]));
         }
 
-        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 ) {
-            switches.push(this.renderPresetsSwitch(presets));
-        }
+        // if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 ) {
+        //     switches.push(this.renderPresetsSwitch(presets));
+        // }
 
         return (
             <View style={styles.container}>

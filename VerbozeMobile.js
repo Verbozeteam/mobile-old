@@ -96,7 +96,16 @@ class VerbozeMobile extends React.Component<any, any> {
 
   render() {
     return (
-      <Navigation />
+      <View style={{flex: 1}}>
+        <Navigation />
+        <View style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+        }}>
+          <RoomPanelOverlay />
+        </View>
+      </View>
     );
   }
 }
@@ -118,10 +127,14 @@ import { Provider } from 'react-redux';
 
 const ConnectionReducer = require('./reducers/connection');
 const ThingsReducer = require('./reducers/things');
+const PanelsReducer = require('./reducers/panels');
+
+const RoomPanelOverlay = require('./components/RoomPanelOverlay');
 
 const STORE = createStore(combineReducers({
   connection: ConnectionReducer,
-  things: ThingsReducer
+  things: ThingsReducer,
+  panels: PanelsReducer,
 }));
 
 class VerbozeMobileWrapper extends React.Component<any> {
