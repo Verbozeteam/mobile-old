@@ -7,17 +7,9 @@ import { connect as ReduxConnect } from 'react-redux';
 
 const Room = require('./Room');
 
-import { ConfigType } from '../config/ConnectionTypes';
-
 function mapStateToProps(state: Object) {
   return {
     config: state.connection.config
-  };
-}
-
-function mapDispatchToProps(dispatch: Function) {
-  return {
-
   };
 }
 
@@ -49,8 +41,6 @@ RoomsView.contextTypes = {
   store: PropTypes.object
 };
 
-RoomsView = ReduxConnect(mapStateToProps, mapDispatchToProps) (RoomsView);
-
 const styles = StyleSheet.create({
   container: {
     margin: 20,
@@ -59,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-module.exports = RoomsView;
+module.exports = ReduxConnect(mapStateToProps) (RoomsView);

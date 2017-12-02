@@ -1,13 +1,13 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Dimensions, PanResponder } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
 import { RoomType, PanelType } from '../config/ConnectionTypes';
 
-const LightsPanel = require('./LightsPanel');
+const RoomPanelCard = require('./RoomPanelCard');
 
 const I18n = require('../i18n/i18n');
 
@@ -19,29 +19,13 @@ type StateType = {
 };
 
 class Room extends React.Component<PropsType, StateType> {
+  _panResponder: Object;
 
-  renderPanel(panel: PanelType) {
-    const { roomConfig } = this.props;
-
-    if (panel.things.length > 0) {
-      switch (panel.things[0].category) {
-        case 'dimmers':
-        case 'light_switches':
-          return (
-            <LightsPanel
-              things={panel.things}
-              viewType={'collapsed'}
-              layout={{width: Dimensions.get('window').width - 40, height: 24}}
-              presets={panel.presets}/>
-          );
-        case 'hotel_controls':
-          return null;
-        case 'central_acs':
-          return null;
-      }
-    }
-
-    return null;
+  componentWillMount() {
+      this._panResponder = PanResponder.create({
+          onMoveShouldSetPanResponder: () => true,
+          onMoveShouldSetPanResponderCapture: () => true,
+      });
   }
 
   render() {
@@ -50,25 +34,18 @@ class Room extends React.Component<PropsType, StateType> {
     var panels = [];
     for (var i = 0; i < roomConfig.grid.length; i++) {
       for (var j = 0; j < roomConfig.grid[i].panels.length; j++) {
-        var panel = roomConfig.grid[i].panels[j];
-        panels.push(
-          <View key={'panel-'+panel.name.en+'-'+roomConfig.name.en}
-            style={styles.card}>
-            <Text style={styles.card_name}>{I18n.t(panel.name.en)}</Text>
-            {this.renderPanel(panel)}
-          </View>
-        );
+        const panel = roomConfig.grid[i].panels[j];
+        panels.push(<RoomPanelCard key={'panel-'+panel.name.en+'-'+roomConfig.name.en} panel={panel} roomConfig={roomConfig} />);
       }
     }
 
-    console.log(panels);
-
     return (
-      <View style={styles.container}>
+      <View style={styles.container}
+        {...this._panResponder.panHandlers}>
         <Text style={styles.room_name}>
           {I18n.t(roomConfig.name.en)}
         </Text>
-        <ScrollView style={styles.cardholder}>
+        <ScrollView style={styles.panel_scroller}>
           {panels}
         </ScrollView>
       </View>
@@ -90,21 +67,9 @@ const styles = StyleSheet.create({
     fontSize: 32,
     marginLeft: 10,
   },
-  cardholder: {
+  panel_scroller: {
     flex: 1,
     flexDirection: 'column',
-  },
-  card: {
-    width: '100%',
-    backgroundColor: '#FFFFFF',
-    borderRadius: 15,
-    padding: 10,
-    minHeight: 100,
-    marginBottom: 10,
-  },
-  card_name: {
-    fontSize: 20,
-    marginBottom: 10,
   },
 });
 
