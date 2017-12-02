@@ -9,7 +9,7 @@ export function ViewWrapper(ChildView) {
   return class extends React.Component {
     render() {
       return (
-        <View style={styles.container}>
+        <View style={styles.contianer}>
           <TopBar />
           <ChildView />
         </View>
@@ -20,6 +20,8 @@ export function ViewWrapper(ChildView) {
 
 const styles = StyleSheet.create({
   contianer: {
-    flex: 1
+    height: '100%',
+    flex: 1,
+    flexDirection: 'column',
   }
 });

@@ -61,6 +61,8 @@ class Room extends React.Component<PropsType, StateType> {
       }
     }
 
+    console.log(panels);
+
     return (
       <View style={styles.container}>
         <Text style={styles.room_name}>
