@@ -74,6 +74,7 @@ class LightSwitch extends React.Component<PropsType, StateType> {
             <TouchableWithoutFeedback
                 onPressIn={on_press}>
                 <Image style={styles.light_bulb}
+                    fadeDuration={0}
                     resizeMode='contain'
                     source={light_bulb_img}>
                 </Image>

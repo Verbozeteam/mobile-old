@@ -81,8 +81,9 @@ class VerbozeMobile extends React.Component<any, any> {
 
   /* websocket callback on disconnect event */
   onDisconnected() : any {
-    const { setConnectionState } = this.props;
+    const { setConnectionState, setConfig } = this.props;
     setConnectionState(0);
+    setConfig(null);
   }
 
   /* websocket callback on message event */

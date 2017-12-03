@@ -6,11 +6,13 @@ import { SET_OVERLAYING_PANEL }
 type StateType = {
     overlaying_room_name: string,
     overlaying_panel_name: string,
+    background_layout: Object,
 }
 
 const defaultState: StateType = {
   overlaying_room_name: "",
   overlaying_panel_name: "",
+  background_layout: {},
 };
 
 module.exports = (state: StateType = defaultState, action: Object) => {
@@ -21,6 +23,7 @@ module.exports = (state: StateType = defaultState, action: Object) => {
     case SET_OVERLAYING_PANEL:
       new_state.overlaying_room_name = action.room_name;
       new_state.overlaying_panel_name = action.panel_name;
+      new_state.background_layout = action.background_layout;
       break;
   }
 

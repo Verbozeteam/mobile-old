@@ -5,6 +5,7 @@ import { View, ScrollView, Text, StyleSheet, Dimensions, TouchableWithoutFeedbac
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
+import { ViewType } from '../config/flowtypes';
 import { RoomType, PanelType } from '../config/ConnectionTypes';
 
 const LightsPanel = require('./LightsPanel');
@@ -15,6 +16,8 @@ const I18n = require('../i18n/i18n');
 type PropsType = {
   panel: PanelType,
   roomConfig: RoomType,
+  viewType: ViewType,
+  layout?: any,
 };
 
 type StateType = {
@@ -26,29 +29,41 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
     isPressed: false,
   }
 
+  _currentLayout = {x: 0, y: 0, width: 0, height: 0};
+
+  onLayout(nativeEvent: any) {
+    this.refs.CardView.measure(((x, y, width, height, pageX, pageY) => {
+      this._currentLayout = {
+        x: pageX + x,
+        y: pageY + y,
+        width, height,
+      };
+    }).bind(this));
+  }
+
   panelPressedIn() {
     const { panel } = this.props;
-    this.setState({
-      isPressed: true,
-    });
+    // this.setState({
+    //   isPressed: true,
+    // });
   }
 
   panelPressedOut() {
     const { panel } = this.props;
-    this.setState({
-      isPressed: false,
-    });
+    // this.setState({
+    //   isPressed: false,
+    // });
   }
 
   panelPressed() {
     const { panel, roomConfig } = this.props;
     const { store } = this.context;
-    store.dispatch(PanelsActions.set_overlaying_panel(roomConfig.name.en, panel.name.en));
+    store.dispatch(PanelsActions.set_overlaying_panel(roomConfig.name.en, panel.name.en, this._currentLayout));
   }
 
   render() {
     const { isPressed } = this.state;
-    const { panel } = this.props;
+    const { panel, viewType, layout } = this.props;
 
     var rendered_panel = null;
     if (panel.things.length > 0) {
@@ -73,9 +88,11 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
       <TouchableWithoutFeedback
         onPressIn={this.panelPressedIn.bind(this)}
         onPressOut={this.panelPressedOut.bind(this)}
-        onPress={this.panelPressed.bind(this)}>
+        onPress={this.panelPressed.bind(this)}
+        onLayout={this.onLayout.bind(this)}>
         <View
-          style={[styles.card, isPressed ? styles.card_pressed : {}]}
+          ref="CardView"
+          style={[styles.card, isPressed ? styles.card_pressed : {}, layout]}
           pointerEvents={"box-only"}>
           <Text style={styles.card_name}>{I18n.t(panel.name.en)}</Text>
           {rendered_panel}
