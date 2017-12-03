@@ -111,7 +111,7 @@ class LightsPanel extends React.Component<PropsType>  {
         return (
             <View style={styles.container}>
                 {dimmers}
-                <View style={styles.switches_container}>
+                <View style={viewType === 'detail' ? styles.switches_tall_container : styles.switches_container}>
                     {switches}
                 </View>
             </View>
@@ -129,6 +129,10 @@ const styles = StyleSheet.create({
         flex: 1,
         height: 100,
     },
+    switches_tall_container: {
+        height: 800,
+        width: '100%',
+    }
 });
 
 const dimmer_styles = StyleSheet.create({
