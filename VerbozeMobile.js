@@ -1,7 +1,8 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, AppRegistry, StyleSheet, Platform } from 'react-native';
+import { View, Text, AppRegistry, StyleSheet, Platform, StatusBar }
+  from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
@@ -46,6 +47,13 @@ class VerbozeMobile extends React.Component<any, any> {
     WebSocketCommunication.setOnConnected(this.onConnected.bind(this));
     WebSocketCommunication.setOnDisconnected(this.onDisconnected.bind(this));
     WebSocketCommunication.setOnMessage(this.onMessage.bind(this));
+
+    /* change status bar to light */
+    StatusBar.setBarStyle('light-content', true);
+    if (Platform.OS === 'android') {
+      StatusBar.setTranslucent(true);
+      StatusBar.setBackgroundColor('#13162b', true);
+    }
   }
 
   componentDidMount() : any {
@@ -98,13 +106,7 @@ class VerbozeMobile extends React.Component<any, any> {
     return (
       <View style={styles.container}>
         <Navigation />
-        <View style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}>
-          <RoomPanelOverlay />
-        </View>
+
       </View>
     );
   }
