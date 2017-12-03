@@ -26,8 +26,10 @@ class LightsPanel extends React.Component<PropsType>  {
         var dimmer_name = '';
         var slider_width = layout.width - 20;
         var slider_height = 30;
-        if (viewType === 'detail')
+        if (viewType === 'detail') {
+            slider_height = 60;
             dimmer_name = I18n.t(dimmer.name.en);
+        }
 
         return <View
             key={dimmer.id+'-container'}
@@ -63,7 +65,7 @@ class LightsPanel extends React.Component<PropsType>  {
                     id={light_switch.id}
                     viewType={viewType} />
                 <Text key={light_switch.id+'-name'}
-                    style={[switch_styles.name, viewType === 'detail' ? {height: 100} : {}]}>
+                    style={[switch_styles.name, viewType === 'detail' ? {height: 50} : {}]}>
                     {switch_name}
                 </Text>
             </View>
@@ -145,7 +147,7 @@ const dimmer_styles = StyleSheet.create({
         marginLeft: 20,
         fontSize: 20,
         fontFamily: 'HKNova-MediumR',
-        color: '#FFFFFF',
+        color: '#000000',
     },
 });
 
@@ -161,7 +163,7 @@ const switch_styles = StyleSheet.create({
     name: {
         fontSize: 20,
         fontFamily: 'HKNova-MediumR',
-        color: '#FFFFFF',
+        color: '#000000',
         textAlign: 'center',
     }
 });

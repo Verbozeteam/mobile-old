@@ -73,7 +73,7 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
           rendered_panel = (
             <LightsPanel
               things={panel.things}
-              viewType={'collapsed'}
+              viewType={viewType}
               layout={{width: Dimensions.get('window').width - (isPressed ? 40 : 60), height: 24}}
               presets={panel.presets}/>
           );

@@ -107,7 +107,13 @@ class VerbozeMobile extends React.Component<any, any> {
     return (
       <View style={styles.container}>
         <Navigation />
-
+        <View style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+        }}>
+          <RoomPanelOverlay />
+        </View>
       </View>
     );
   }

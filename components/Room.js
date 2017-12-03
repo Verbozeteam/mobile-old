@@ -35,7 +35,13 @@ class Room extends React.Component<PropsType, StateType> {
     for (var i = 0; i < roomConfig.grid.length; i++) {
       for (var j = 0; j < roomConfig.grid[i].panels.length; j++) {
         const panel = roomConfig.grid[i].panels[j];
-        panels.push(<RoomPanelCard key={'panel-'+panel.name.en+'-'+roomConfig.name.en} panel={panel} roomConfig={roomConfig} />);
+        panels.push(
+          <RoomPanelCard
+            key={'panel-'+panel.name.en+'-'+roomConfig.name.en}
+            panel={panel}
+            roomConfig={roomConfig}
+            viewType={'collapsed'} />
+        );
       }
     }
 
