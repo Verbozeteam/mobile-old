@@ -3,6 +3,7 @@
 import * as React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 
+const GenericToggle = require('../react-components/GenericToggle')
 const LightDimmer = require('./LightDimmer');
 const LightSwitch = require('./LightSwitch');
 //const PresetsSwitch = require('./PresetsSwitch');
@@ -24,7 +25,7 @@ class LightsPanel extends React.Component<PropsType>  {
         const { viewType, layout } = this.props;
 
         var dimmer_name = '';
-        var slider_width = layout.width - 20;
+        var slider_width = layout.width - 40;
         var slider_height = 30;
         if (viewType === 'detail') {
             slider_height = 60;
@@ -34,16 +35,16 @@ class LightsPanel extends React.Component<PropsType>  {
         return <View
             key={dimmer.id+'-container'}
             style={dimmer_styles.container}>
-            <LightDimmer
-                key={dimmer.id}
-                id={dimmer.id}
-                layout={{width: slider_width, height: slider_height, top: 0, left: 0}}/>
             <View key={dimmer.id+'-name'}
                 style={dimmer_styles.name_container}>
                 <Text style={dimmer_styles.name}>
                     {dimmer_name}
                 </Text>
             </View>
+            <LightDimmer
+                key={dimmer.id}
+                id={dimmer.id}
+                layout={{width: slider_width, height: slider_height, top: 0, left: 0}}/>
         </View>;
     }
 
@@ -51,13 +52,27 @@ class LightsPanel extends React.Component<PropsType>  {
         const { viewType } = this.props;
 
         var switch_name = '';
+        var switch_view = null;
+        var extra_style = {};
+        if (viewType === 'detail') {
+            switch_view = (
+                <View  style={{flex: 2, alignItems: 'center', justifyContent: 'center',}}>
+                    <GenericToggle
+                        selected={0}
+                        values={['Off', 'On']}
+                        actions={[() => {}, () => {}]}
+                        layout={{width: 200, height: 70}}/>
+                </View>
+            );
+            extra_style = {
+                height: 120,
+            };
 
-        if (viewType == 'detail') {
             switch_name = I18n.t(light_switch.name.en);
         }
 
         return <View key={light_switch.id+'-container'}
-            style={switch_styles.container}>
+            style={[switch_styles.container, extra_style]}>
             <View key={light_switch.id+'-container-container'}
                 style={switch_styles.container_container}>
                 <LightSwitch
@@ -65,10 +80,11 @@ class LightsPanel extends React.Component<PropsType>  {
                     id={light_switch.id}
                     viewType={viewType} />
                 <Text key={light_switch.id+'-name'}
-                    style={[switch_styles.name, viewType === 'detail' ? {height: 50} : {}]}>
+                    style={[switch_styles.name, viewType === 'detail' ? {height: 30} : {}]}>
                     {switch_name}
                 </Text>
             </View>
+            {switch_view}
         </View>;
     }
 
@@ -130,7 +146,7 @@ const styles = StyleSheet.create({
         height: 100,
     },
     switches_tall_container: {
-        height: 800,
+        flexDirection: 'column',
         width: '100%',
     }
 });
@@ -148,7 +164,7 @@ const dimmer_styles = StyleSheet.create({
         flex: 1,
     },
     name: {
-        marginLeft: 20,
+        marginRight: 20,
         fontSize: 20,
         fontFamily: 'HKNova-MediumR',
         color: '#000000',
@@ -157,7 +173,7 @@ const dimmer_styles = StyleSheet.create({
 
 const switch_styles = StyleSheet.create({
     container: {
-        flexDirection: 'column',
+        flexDirection: 'row',
         flex: 1,
     },
     container_container: {
