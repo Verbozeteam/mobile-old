@@ -150,16 +150,14 @@ class RoomPanelOverlay extends React.Component<any, StateType> {
     // }
     if (animation_stage == 1) {
       header = (
-        <View style={styles.header_container}>
-          <View style={styles.cancel_container}>
-            <TouchableWithoutFeedback
-                onPressIn={this.animationFrame.bind(this)}>
-              <Image style={styles.cancel_image}
-                resizeMode='contain'
-                source={this._cancel_image}>
-              </Image>
-            </TouchableWithoutFeedback>
-          </View>
+        <View style={styles.cancel_container}>
+          <TouchableWithoutFeedback
+              onPressIn={this.animationFrame.bind(this)}>
+            <Image style={styles.cancel_image}
+              resizeMode='contain'
+              source={this._cancel_image}>
+            </Image>
+          </TouchableWithoutFeedback>
         </View>
       );
     }
@@ -188,11 +186,6 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     flexDirection: 'column',
-  },
-  header_container: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
   },
