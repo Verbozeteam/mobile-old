@@ -1,7 +1,11 @@
 /* @flow */
 
 import * as React from 'react';
+import PropTypes from 'prop-types';
 import { View, Text, StyleSheet } from 'react-native';
+
+const thingsActions = require('../actions/things');
+const SocketCommunication = require('../lib/WebSocketCommunication');
 
 const GenericToggle = require('../react-components/GenericToggle')
 const LightDimmer = require('./LightDimmer');
@@ -21,6 +25,15 @@ type PropsType = {
 };
 
 class LightsPanel extends React.Component<PropsType>  {
+
+    changeIntensity(lightid: string, intensity: number) {
+        SocketCommunication.sendMessage({
+            thing: lightid,
+            intensity
+        });
+        this.context.store.dispatch(thingsActions.set_thing_partial_state(lightid, {intensity}));
+    }
+
     renderDimmer(dimmer: GenericThingType) {
         const { viewType, layout } = this.props;
 
@@ -59,7 +72,7 @@ class LightsPanel extends React.Component<PropsType>  {
                     <GenericToggle
                         selected={0}
                         values={['Off', 'On']}
-                        actions={[() => {}, () => {}]}
+                        actions={[() => this.changeIntensity(light_switch.id, 0), () => this.changeIntensity(light_switch.id, 1)]}
                         layout={{width: 200, height: 70}}/>
                 </View>
             );
@@ -130,6 +143,9 @@ class LightsPanel extends React.Component<PropsType>  {
         );
     }
 }
+LightsPanel.contextTypes = {
+    store: PropTypes.object
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -163,6 +179,7 @@ const dimmer_styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'HKNova-MediumR',
         color: '#000000',
+        backgroundColor: '#00000000',
     },
 });
 
@@ -180,6 +197,7 @@ const switch_styles = StyleSheet.create({
         fontFamily: 'HKNova-MediumR',
         color: '#000000',
         textAlign: 'center',
+        backgroundColor: '#00000000',
     }
 });
 

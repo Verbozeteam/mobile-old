@@ -56,6 +56,7 @@ class Room extends React.Component<PropsType, StateType> {
         <ScrollView ref={c => this._scroll_view_ref = c}
           style={styles.panel_scroller}>
           {panels}
+          <View style={{height: 10}}/>
         </ScrollView>
       </View>
     );
