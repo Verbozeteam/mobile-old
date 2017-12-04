@@ -166,13 +166,13 @@ class RoomPanelOverlay extends React.Component<any, StateType> {
 
     return (
       <View style={styles.container}>
-        <ScrollView style={[styles.card_container, panel_layout]}>
+        <View style={[styles.card_container, panel_layout]}>
           <RoomPanelCard key={'panel-overlay'}
             panel={panel}
             roomConfig={room}
             viewType={(animation_stage == 1) ? 'detail' : 'collapsed'}
             layout={{margin: 0}} />
-        </ScrollView>
+        </View>
         {header}
       </View>
     );
