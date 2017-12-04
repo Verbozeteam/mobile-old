@@ -68,8 +68,8 @@ class TopBar extends React.Component<PropsType, StateType> {
     const { navigation } = this.props;
 
     if (Platform.OS === 'android') {
-      /* get Android status bar height */
-      this._status_bar_height = StatusBar.currentHeight;
+      /* on Android, no need for status bar height */
+      this._status_bar_height = 0;
 
       /* create hamburger for Android */
       this._hamburger = (

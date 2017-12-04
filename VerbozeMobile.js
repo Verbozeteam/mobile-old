@@ -52,7 +52,6 @@ class VerbozeMobile extends React.Component<any, any> {
     /* change status bar to light */
     StatusBar.setBarStyle('light-content', true);
     if (Platform.OS === 'android') {
-      StatusBar.setTranslucent(true);
       StatusBar.setBackgroundColor('#13162b', true);
     }
   }
