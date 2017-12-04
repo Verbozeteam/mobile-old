@@ -4,7 +4,7 @@ import * as React from 'react';
 import { View, Text, Image, TouchableWithoutFeedback, StyleSheet }
     from 'react-native';
 import PropTypes from 'prop-types';
-const connectionActions = require('../actions/connection');
+const thingsActions = require('../actions/things');
 const SocketCommunication = require('../lib/WebSocketCommunication');
 
 import type { ViewType } from '../config/flowtypes';
@@ -50,8 +50,8 @@ class HotelControlsPanelContents extends React.Component<PropsType, StateType> {
         const { service_state, dnd_state } = this.state;
         const { id } = this.props;
 
-        if (reduxState && reduxState.connection && reduxState.connection.thingStates) {
-            const my_redux_state = reduxState.connection.thingStates[id];
+        if (reduxState && reduxState.things && reduxState.things.things_states) {
+            const my_redux_state = reduxState.things.things_states[id];
             if (my_redux_state && my_redux_state.room_service != undefined && my_redux_state.do_not_disturb != undefined) {
                 if (my_redux_state.room_service != service_state || my_redux_state.do_not_disturb != dnd_state) {
                     this.setState({
@@ -74,7 +74,7 @@ class HotelControlsPanelContents extends React.Component<PropsType, StateType> {
             room_service: service_state,
             do_not_disturb: dnd_state,
         });
-        this.context.store.dispatch(connectionActions.set_thing_partial_state(this.props.id, {room_service: service_state, do_not_disturb: dnd_state}));
+        this.context.store.dispatch(thingsActions.set_thing_partial_state(this.props.id, {room_service: service_state, do_not_disturb: dnd_state}));
     }
 
     toggleDoNotDisturb() {
@@ -88,7 +88,7 @@ class HotelControlsPanelContents extends React.Component<PropsType, StateType> {
             room_service: service_state,
             do_not_disturb: dnd_state,
         });
-        this.context.store.dispatch(connectionActions.set_thing_partial_state(this.props.id, {room_service: service_state, do_not_disturb: dnd_state}));
+        this.context.store.dispatch(thingsActions.set_thing_partial_state(this.props.id, {room_service: service_state, do_not_disturb: dnd_state}));
     }
 
     render() {
@@ -165,6 +165,7 @@ const styles = StyleSheet.create({
         fontFamily: 'HKNova-MediumR',
         color: '#FFFFFF',
         textAlign: 'center',
+        backgroundColor: '#00000000',
     },
     card: {
         height: 351,

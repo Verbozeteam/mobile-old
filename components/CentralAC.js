@@ -12,7 +12,7 @@ const GenericCircularSlider = require('../react-components/GenericCircularSlider
 const GenericToggle = require('../react-components/GenericToggle');
 const GenericButton = require('../react-components/GenericButton');
 
-const connectionActions = require('../actions/connection');
+const thingsActions = require('../actions/things');
 const SocketCommunication = require('../lib/WebSocketCommunication');
 
 const I18n = require('../i18n/i18n');
@@ -71,8 +71,8 @@ class CentralAC extends React.Component<PropsType, StateType> {
       const { set_pt, temp, fan } = this.state;
       const { id } = this.props;
 
-      if (reduxState && reduxState.connection && reduxState.connection.thingStates) {
-          const my_redux_state = reduxState.connection.thingStates[id];
+      if (reduxState && reduxState.things && reduxState.things.things_states) {
+          const my_redux_state = reduxState.things.things_states[id];
           if (my_redux_state &&
               ((my_redux_state.set_pt != undefined && my_redux_state.set_pt != set_pt) ||
                (my_redux_state.temp != undefined && my_redux_state.temp != temp) ||
@@ -98,7 +98,7 @@ class CentralAC extends React.Component<PropsType, StateType> {
                   set_pt: new_set_pt,
               });
           }
-          this.context.store.dispatch(connectionActions.set_thing_partial_state(this.props.id, {set_pt: new_set_pt}));
+          this.context.store.dispatch(thingsActions.set_thing_partial_state(this.props.id, {set_pt: new_set_pt}));
       }).bind(this);
   }
 
@@ -107,7 +107,7 @@ class CentralAC extends React.Component<PropsType, StateType> {
           thing: this.props.id,
           fan: speed,
       });
-      this.context.store.dispatch(connectionActions.set_thing_partial_state(this.props.id, {fan: speed}));
+      this.context.store.dispatch(thingsActions.set_thing_partial_state(this.props.id, {fan: speed}));
   }
 
   render() {
@@ -224,9 +224,10 @@ const styles = StyleSheet.create({
   },
   room_temperature: {
     marginTop: 20,
-    fontSize: 22,
+    fontSize: 20,
     color: '#333333',
-    fontFamily: 'HKNova-MediumR'
+    fontFamily: 'HKNova-MediumR',
+    backgroundColor: '#00000000',
   },
   center_text_container: {
     position: 'absolute',
@@ -235,16 +236,18 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   center_text_main: {
-    fontSize: 70,
+    fontSize: 60,
     color: '#000000',
     fontFamily: 'HKNova-MediumR',
-    marginTop: -10
+    marginTop: 0,
+    backgroundColor: '#00000000',
   },
   center_text_sub: {
-    fontSize: 22,
+    fontSize: 20,
     color: '#333333',
     fontFamily: 'HKNova-MediumR',
-    marginTop: -110
+    marginTop: -110,
+    backgroundColor: '#00000000',
   },
   minus_container: {
       position: 'absolute',

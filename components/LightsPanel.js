@@ -163,6 +163,7 @@ const dimmer_styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'HKNova-MediumR',
         color: '#000000',
+        backgroundColor: '#00000000',
     },
 });
 
@@ -180,6 +181,7 @@ const switch_styles = StyleSheet.create({
         fontFamily: 'HKNova-MediumR',
         color: '#000000',
         textAlign: 'center',
+        backgroundColor: '#00000000',
     }
 });
 

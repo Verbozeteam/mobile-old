@@ -88,8 +88,6 @@ class RoomPanelOverlay extends React.Component<any, StateType> {
   animationFrame() {
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
-    console.log("stage from ", this.state.animation_stage, " to ", (this.state.animation_stage + 1) % 4);
-
     this.setState({
       animation_stage: (this.state.animation_stage + 1) % 4,
     });
@@ -101,8 +99,6 @@ class RoomPanelOverlay extends React.Component<any, StateType> {
   render() {
     const { background_layout } = this.props;
     const { animation_stage } = this.state;
-
-    console.log("RENDER AT STAGE ", animation_stage);
 
     var room = this.findSelectedRoom();
     var panel = this.findSelectedPanel();

@@ -44,6 +44,7 @@ RoomsView.contextTypes = {
 const styles = StyleSheet.create({
   container: {
     margin: 20,
+    marginBottom: 0,
     flex: 1,
     flexDirection: 'column',
   },

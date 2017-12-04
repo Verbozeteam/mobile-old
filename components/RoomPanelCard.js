@@ -65,13 +65,10 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
 
   _measure(callback) {
     this._container_ref.measure((x, y, width, height, pageX, pageY) => {
-      console.log(x, y, width, height, pageX, pageY);
       this._container_layout = {x: pageX, y: pageY, height, width};
 
-      if (typeof callback == 'function') {
-        console.log('calling callback');
+      if (typeof callback == 'function')
         callback();
-      }
     });
   }
 
@@ -118,7 +115,7 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
         <View
           ref={c => this._container_ref = c}
           style={[styles.card, isPressed ? styles.card_pressed : {}, layout]}
-          pointerEvents={"box-only"}>
+          pointerEvents={viewType === 'detail' ? "box-none" : "box-only"}>
           <Text style={styles.card_name}>{I18n.t(panel.name.en)}</Text>
           {rendered_panel}
         </View>
