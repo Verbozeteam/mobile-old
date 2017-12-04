@@ -20,6 +20,17 @@ type StateType = {
 
 class Room extends React.Component<PropsType, StateType> {
 
+  _scroll_view_ref: Object;
+
+  _offset: number = 0;
+
+  componentDidMount() {
+    // setInterval(() => {
+    //   this._scroll_view_ref.scrollTo({x: 0, y: this._offset, animated: true});
+    //   this._offset += 10;
+    // }, 1000);
+  }
+
   render() {
     const { roomConfig } = this.props;
 
@@ -42,7 +53,8 @@ class Room extends React.Component<PropsType, StateType> {
         <Text style={styles.room_name}>
           {I18n.t(roomConfig.name.en)}
         </Text>
-        <ScrollView style={styles.panel_scroller}>
+        <ScrollView ref={c => this._scroll_view_ref = c}
+          style={styles.panel_scroller}>
           {panels}
         </ScrollView>
       </View>
