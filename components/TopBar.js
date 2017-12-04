@@ -53,8 +53,8 @@ class TopBar extends React.Component<PropsType, StateType> {
   _hamburger: React.Component = null;
 
   _hotel_logo: number;
-  _hotel_logo_height: number = 320;
-  _hotel_logo_width: number = 2191;
+  _hotel_logo_height: number = 205;
+  _hotel_logo_width: number = 1024;
 
   _hotel_photo: number;
   _hotel_photo_height: number = 220;
