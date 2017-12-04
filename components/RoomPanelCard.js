@@ -27,21 +27,13 @@ type StateType = {
 };
 
 class RoomPanelCard extends React.Component<PropsType, StateType> {
+
   state = {
     isPressed: false,
   }
 
-  _currentLayout = {x: 0, y: 0, width: 0, height: 0};
-
-  onLayout(nativeEvent: any) {
-    this.refs.CardView.measure(((x, y, width, height, pageX, pageY) => {
-      this._currentLayout = {
-        x: pageX + x,
-        y: pageY + y,
-        width, height,
-      };
-    }).bind(this));
-  }
+  _container_layout = {x: 0, y: 0, width: 0, height: 0};
+  _container_ref: Object;
 
   panelPressedIn() {
     const { panel } = this.props;
@@ -60,7 +52,27 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
   panelPressed() {
     const { panel, roomConfig } = this.props;
     const { store } = this.context;
-    store.dispatch(PanelsActions.set_overlaying_panel(roomConfig.name.en, panel.name.en, this._currentLayout));
+
+    this._measure(() => {
+      store.dispatch(
+        PanelsActions.set_overlaying_panel(
+          roomConfig.name.en, panel.name.en, this._container_layout));
+    });
+
+
+    // store.dispatch(PanelsActions.set_overlaying_panel(roomConfig.name.en, panel.name.en, this._currentLayout));
+  }
+
+  _measure(callback) {
+    this._container_ref.measure((x, y, width, height, pageX, pageY) => {
+      console.log(x, y, width, height, pageX, pageY);
+      this._container_layout = {x: pageX, y: pageY, height, width};
+
+      if (typeof callback == 'function') {
+        console.log('calling callback');
+        callback();
+      }
+    });
   }
 
   render() {
@@ -102,10 +114,9 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
       <TouchableWithoutFeedback
         onPressIn={this.panelPressedIn.bind(this)}
         onPressOut={this.panelPressedOut.bind(this)}
-        onPress={this.panelPressed.bind(this)}
-        onLayout={this.onLayout.bind(this)}>
+        onPress={this.panelPressed.bind(this)}>
         <View
-          ref="CardView"
+          ref={c => this._container_ref = c}
           style={[styles.card, isPressed ? styles.card_pressed : {}, layout]}
           pointerEvents={"box-only"}>
           <Text style={styles.card_name}>{I18n.t(panel.name.en)}</Text>
