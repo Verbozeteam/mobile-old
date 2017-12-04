@@ -53,7 +53,6 @@ class LightsPanel extends React.Component<PropsType>  {
 
         var switch_name = '';
         var switch_view = null;
-        var extra_style = {};
         if (viewType === 'detail') {
             switch_view = (
                 <View  style={{flex: 2, alignItems: 'center', justifyContent: 'center',}}>
@@ -64,15 +63,12 @@ class LightsPanel extends React.Component<PropsType>  {
                         layout={{width: 200, height: 70}}/>
                 </View>
             );
-            extra_style = {
-                height: 120,
-            };
 
             switch_name = I18n.t(light_switch.name.en);
         }
 
         return <View key={light_switch.id+'-container'}
-            style={[switch_styles.container, extra_style]}>
+            style={switch_styles.container}>
             <View key={light_switch.id+'-container-container'}
                 style={switch_styles.container_container}>
                 <LightSwitch
@@ -88,25 +84,25 @@ class LightsPanel extends React.Component<PropsType>  {
         </View>;
     }
 
-    renderPresetsSwitch(presets: Array<Object>) {
-        const { viewType, layout } = this.props;
-        var key = 'presets-'+Object.keys(presets[0]).sort()[0];
+    // renderPresetsSwitch(presets: Array<Object>) {
+    //     const { viewType, layout } = this.props;
+    //     var key = 'presets-'+Object.keys(presets[0]).sort()[0];
 
-        return <View key={key}
-            style={switch_styles.container}>
-            <View key={key+'-container-container'}
-                style={switch_styles.container_container}>
-                <PresetsSwitch
-                    key={key+'-switch'}
-                    presets={presets}
-                    viewType={viewType} />
-                <Text key={key+'-name'}
-                    style={[switch_styles.name, viewType === 'detail' ? {height: 100} : {}]}>
-                    {I18n.t("Presets")}
-                </Text>
-            </View>
-        </View>;
-    }
+    //     return <View key={key}
+    //         style={switch_styles.container}>
+    //         <View key={key+'-container-container'}
+    //             style={switch_styles.container_container}>
+    //             <PresetsSwitch
+    //                 key={key+'-switch'}
+    //                 presets={presets}
+    //                 viewType={viewType} />
+    //             <Text key={key+'-name'}
+    //                 style={[switch_styles.name, viewType === 'detail' ? {height: 100} : {}]}>
+    //                 {I18n.t("Presets")}
+    //             </Text>
+    //         </View>
+    //     </View>;
+    // }
 
     render() {
         const { things, layout, presets, viewType } = this.props;
@@ -127,7 +123,7 @@ class LightsPanel extends React.Component<PropsType>  {
         return (
             <View style={styles.container}>
                 {dimmers}
-                <View style={viewType === 'detail' ? styles.switches_tall_container : styles.switches_container}>
+                <View style={viewType === 'detail' ? [styles.switches_tall_container, {height: switches.length*100}] : styles.switches_container}>
                     {switches}
                 </View>
             </View>
@@ -156,7 +152,6 @@ const dimmer_styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         flexDirection: 'row',
-        flex: 1,
     },
     name_container: {
         marginLeft: 0,

@@ -8,6 +8,8 @@ import { connect as ReduxConnect } from 'react-redux';
 import { ViewType } from '../config/flowtypes';
 import { RoomType, PanelType } from '../config/ConnectionTypes';
 
+const HotelControlsPanelContents = require('./HotelControlsPanelContents');
+const CentralAC = require('./CentralAC');
 const LightsPanel = require('./LightsPanel');
 const PanelsActions = require('../actions/panels');
 
@@ -75,11 +77,23 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
               things={panel.things}
               viewType={viewType}
               layout={{width: Dimensions.get('window').width - (isPressed ? 40 : 60), height: 24}}
-              presets={panel.presets}/>
+              presets={panel.presets} />
           );
+          break;
         case 'hotel_controls':
+          rendered_panel = (
+            <HotelControlsPanelContents
+              id={panel.things[0].id}
+              viewType={viewType}/>
+          );
           break;
         case 'central_acs':
+          rendered_panel = (
+            <CentralAC
+              id={panel.things[0].id}
+              layout={layout}
+              viewType={viewType} />
+          );
           break;
       }
     }
@@ -108,12 +122,12 @@ RoomPanelCard.contextTypes = {
 
 const styles = StyleSheet.create({
   card: {
+    flex: 1,
     backgroundColor: '#FFFFFF',
     borderRadius: 5,
     padding: 10,
     margin: 10,
     marginBottom: 0,
-    minHeight: 100,
     elevation: 5,
     shadowOpacity: 0.25,
     shadowRadius: 3,
