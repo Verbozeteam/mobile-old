@@ -109,11 +109,16 @@ RoomPanelCard.contextTypes = {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFFFF',
-    borderRadius: 15,
+    borderRadius: 5,
     padding: 10,
     margin: 10,
     marginBottom: 0,
     minHeight: 100,
+    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    shadowColor: '#000000',
+    shadowOffset: { height: 2, width: 0 },
   },
   card_pressed: {
     marginLeft: 0,

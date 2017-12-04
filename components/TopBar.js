@@ -162,6 +162,11 @@ class TopBar extends React.Component<PropsType, StateType> {
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+    elevation: 5,
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    shadowColor: '#000000',
+    shadowOffset: { height: 2, width: 0 },
   },
   content: {
     position: 'absolute',

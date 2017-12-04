@@ -18,7 +18,8 @@ import { WebSocketDataType, ConfigType } from './config/ConnectionTypes';
 function mapStateToProps(state: Object) {
   return {
     connection_state: state.connection.connection_state,
-    config: state.connection.config
+    config: state.connection.config,
+    overlay: state.panels.overlaying_room_name
   };
 }
 
@@ -104,14 +105,13 @@ class VerbozeMobile extends React.Component<any, any> {
   }
 
   render() {
+    const { overlay } = this.props;
+
     return (
       <View style={styles.container}>
         <Navigation />
-        <View style={{
-          position: 'absolute',
-          width: '100%',
-          height: '100%',
-        }}>
+        <View pointerEvents={(overlay) ? 'auto' : 'none'}
+          style={styles.overlay}>
           <RoomPanelOverlay />
         </View>
       </View>
@@ -122,6 +122,11 @@ class VerbozeMobile extends React.Component<any, any> {
 const styles = StyleSheet.create({
   container: {
     flex: 1
+  },
+  overlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%'
   }
 });
 

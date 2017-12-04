@@ -1,7 +1,7 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, ScrollView, Text, StyleSheet, Dimensions, PanResponder } from 'react-native';
+import { View, ScrollView, Text, StyleSheet, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
@@ -19,14 +19,6 @@ type StateType = {
 };
 
 class Room extends React.Component<PropsType, StateType> {
-  _panResponder: Object;
-
-  componentWillMount() {
-      this._panResponder = PanResponder.create({
-          onMoveShouldSetPanResponder: () => true,
-          onMoveShouldSetPanResponderCapture: () => true,
-      });
-  }
 
   render() {
     const { roomConfig } = this.props;
@@ -46,8 +38,7 @@ class Room extends React.Component<PropsType, StateType> {
     }
 
     return (
-      <View style={styles.container}
-        {...this._panResponder.panHandlers}>
+      <View style={styles.container}>
         <Text style={styles.room_name}>
           {I18n.t(roomConfig.name.en)}
         </Text>
