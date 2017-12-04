@@ -100,7 +100,7 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
           rendered_panel = (
             <CentralAC
               id={panel.things[0].id}
-              layout={layout}
+              layout={{width: Dimensions.get('window').width - 100, height: Dimensions.get('window').height}}
               viewType={viewType} />
           );
           break;

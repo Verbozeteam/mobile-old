@@ -120,7 +120,7 @@ class CentralAC extends React.Component<PropsType, StateType> {
     var center_text_sub = '';
     var room_temp_text = ' ';
     var hiding_style = {};
-    var presentation_style = {};
+    var center_text_layout = {};
 
     if (viewType === 'detail') {
       if (fan) {
@@ -133,44 +133,46 @@ class CentralAC extends React.Component<PropsType, StateType> {
       room_temp_text = I18n.t('Room Temperature') + ' ' + temp.toFixed(1) + '°C';
 
       slider = (
-        <GenericCircularSlider value={set_pt}
+        <GenericCircularSlider
+          value={set_pt}
           minimum={this._min_temp} maximum={this._max_temp}
           round={this.round.bind(this)}
           onMove={this.changeTemperature(false).bind(this)}
           onRelease={this.changeTemperature(true).bind(this)}
-          diameter={layout.height / 1.5}
+          diameter={layout.height / 2.0}
           disabled={fan === 0} />
       );
 
       toggles = (
         <GenericToggle values={this._fan_speeds}
           icon={this._fan_icon}
-          layout={{height: 80, width: 350}}
+          layout={{height: 60, width: layout.width - 40}}
           actions={this._fan_actions}
           selected={fan} />
       );
-    }
-
-    else {
+    } else {
       hiding_style = {
         display: 'none'
       };
 
       center_text_main = temp.toFixed(1) + '°C';
       center_text_sub = I18n.t('Room Temperature');
-
-      presentation_style = {
-        paddingTop: 80
-      };
+      center_text_layout = {
+        top: 50,
+      }
     }
 
     return (
       <View style={viewType === 'detail' ? styles.container : styles.container_sm}>
-        <View>
+        <View style={styles.slider_container}>
           {slider}
+          <View style={[styles.center_text_container, center_text_layout]}>
+            <Text style={styles.center_text_sub}>{center_text_sub}</Text>
+            <Text style={styles.center_text_main}>{center_text_main}</Text>
+          </View>
         </View>
 
-        <View>
+        <View style={styles.toggles_container}>
           {toggles}
         </View>
 
@@ -198,10 +200,6 @@ class CentralAC extends React.Component<PropsType, StateType> {
             }} />
         </View>
 
-        <View style={[styles.center_text_container, presentation_style]}>
-          <Text style={styles.center_text_sub}>{center_text_sub}</Text>
-          <Text style={styles.center_text_main}>{center_text_main}</Text>
-        </View>
       </View>
     );
   }
@@ -222,6 +220,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  slider_container: {
+    marginTop: -80,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  toggles_container: {
+    marginTop: 70,
+  },
   room_temperature: {
     marginTop: 20,
     fontSize: 20,
@@ -236,27 +242,25 @@ const styles = StyleSheet.create({
     flexDirection: 'column'
   },
   center_text_main: {
-    fontSize: 60,
+    fontSize: 50,
     color: '#000000',
     fontFamily: 'HKNova-MediumR',
-    marginTop: 0,
     backgroundColor: '#00000000',
   },
   center_text_sub: {
-    fontSize: 20,
+    fontSize: 18,
     color: '#333333',
     fontFamily: 'HKNova-MediumR',
-    marginTop: -110,
     backgroundColor: '#00000000',
   },
   minus_container: {
       position: 'absolute',
-      top: 180,
+      top: 240,
       left: 15,
   },
   plus_container: {
       position: 'absolute',
-      top: 180,
+      top: 240,
       right: 15,
   },
 });
