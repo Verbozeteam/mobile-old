@@ -19,7 +19,7 @@ class RoomsView extends React.Component<any, any> {
     const { config } = this.props;
 
     var rooms = [];
-    if (config.rooms) {
+    if (config && config.rooms) {
       for (var i = 0; i < config.rooms.length; i++) {
         rooms.push(
           <View key={'room-card-'+i}>

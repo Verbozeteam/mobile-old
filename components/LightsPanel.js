@@ -10,7 +10,7 @@ const SocketCommunication = require('../lib/WebSocketCommunication');
 const GenericToggle = require('../react-components/GenericToggle')
 const LightDimmer = require('./LightDimmer');
 const LightSwitch = require('./LightSwitch');
-//const PresetsSwitch = require('./PresetsSwitch');
+const PresetsSwitch = require('./PresetsSwitch');
 
 const I18n = require('../i18n/i18n');
 
@@ -70,10 +70,10 @@ class LightsPanel extends React.Component<PropsType>  {
             switch_view = (
                 <View  style={{flex: 2, alignItems: 'center', justifyContent: 'center',}}>
                     <GenericToggle
-                        selected={0}
+                        selected={this.context.store.getState().things.things_states[light_switch.id].intensity}
                         values={['Off', 'On']}
                         actions={[() => this.changeIntensity(light_switch.id, 0), () => this.changeIntensity(light_switch.id, 1)]}
-                        layout={{width: 200, height: 70}}/>
+                        layout={{width: 150, height: 50}}/>
                 </View>
             );
 
@@ -97,25 +97,25 @@ class LightsPanel extends React.Component<PropsType>  {
         </View>;
     }
 
-    // renderPresetsSwitch(presets: Array<Object>) {
-    //     const { viewType, layout } = this.props;
-    //     var key = 'presets-'+Object.keys(presets[0]).sort()[0];
+    renderPresetsSwitch(presets: Array<Object>) {
+        const { viewType, layout } = this.props;
+        var key = 'presets-'+Object.keys(presets[0]).sort()[0];
 
-    //     return <View key={key}
-    //         style={switch_styles.container}>
-    //         <View key={key+'-container-container'}
-    //             style={switch_styles.container_container}>
-    //             <PresetsSwitch
-    //                 key={key+'-switch'}
-    //                 presets={presets}
-    //                 viewType={viewType} />
-    //             <Text key={key+'-name'}
-    //                 style={[switch_styles.name, viewType === 'detail' ? {height: 100} : {}]}>
-    //                 {I18n.t("Presets")}
-    //             </Text>
-    //         </View>
-    //     </View>;
-    // }
+        return <View key={key}
+            style={switch_styles.container}>
+            <View key={key+'-container-container'}
+                style={switch_styles.container_container}>
+                <Text key={key+'-name'}
+                    style={[switch_styles.name, viewType === 'detail' ? {height: 30} : {}]}>
+                    {I18n.t("Presets")}
+                </Text>
+                <PresetsSwitch
+                    key={key+'-switch'}
+                    presets={presets}
+                    viewType={viewType} />
+            </View>
+        </View>;
+    }
 
     render() {
         const { things, layout, presets, viewType } = this.props;
@@ -129,9 +129,9 @@ class LightsPanel extends React.Component<PropsType>  {
                switches.push(this.renderLightSwitch(things[i]));
         }
 
-        // if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 ) {
-        //     switches.push(this.renderPresetsSwitch(presets));
-        // }
+        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 ) {
+            switches.push(this.renderPresetsSwitch(presets));
+        }
 
         return (
             <View style={styles.container}>
