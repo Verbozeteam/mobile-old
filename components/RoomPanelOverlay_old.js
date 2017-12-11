@@ -184,6 +184,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
+    backgroundColor: 'red'
   },
   header_text: {
     color: '#000000',
@@ -206,6 +207,7 @@ const styles = StyleSheet.create({
   },
   card_container: {
     position: 'absolute',
+    backgroundColor: 'green'
   }
 });
 

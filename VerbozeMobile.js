@@ -74,6 +74,7 @@ class VerbozeMobile extends React.Component<any, any> {
     const { setConnectionState } = this.props;
     setConnectionState(2);
 
+    console.log('sending code 0');
     WebSocketCommunication.sendMessage({
       code: 0
     });
@@ -111,7 +112,7 @@ class VerbozeMobile extends React.Component<any, any> {
         <Navigation />
         <View pointerEvents={(overlay) ? 'auto' : 'none'}
           style={styles.overlay}>
-          <RoomPanelOverlay />
+          {/* <RoomPanelOverlay /> */}
         </View>
       </View>
     );
@@ -145,8 +146,6 @@ import { Provider } from 'react-redux';
 const ConnectionReducer = require('./reducers/connection');
 const ThingsReducer = require('./reducers/things');
 const PanelsReducer = require('./reducers/panels');
-
-const RoomPanelOverlay = require('./components/RoomPanelOverlay');
 
 const STORE = createStore(combineReducers({
   connection: ConnectionReducer,

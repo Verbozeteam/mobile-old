@@ -15,6 +15,8 @@ const PanelsActions = require('../actions/panels');
 
 const I18n = require('../i18n/i18n');
 
+import LinearGradient from 'react-native-linear-gradient'
+
 type PropsType = {
   panel: PanelType,
   roomConfig: RoomType,
@@ -112,12 +114,17 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
         onPressIn={this.panelPressedIn.bind(this)}
         onPressOut={this.panelPressedOut.bind(this)}
         onPress={this.panelPressed.bind(this)}>
-        <View
-          ref={c => this._container_ref = c}
-          style={[styles.card, isPressed ? styles.card_pressed : {}, layout]}
-          pointerEvents={viewType === 'detail' ? "box-none" : "box-only"}>
-          <Text style={styles.card_name}>{I18n.t(panel.name.en)}</Text>
-          {rendered_panel}
+        <View ref={c => this._container_ref = c}
+          pointerEvents={viewType === 'detail' ? 'box-none' : 'box-only'}
+          style={[styles.card_container, layout]}>
+          <LinearGradient colors={['#384D66', '#182434']}
+            start={{x: 0, y: 0}} end={{x: 1, y: 1}}
+            style={[styles.card]}>
+            <Text style={styles.card_name}>
+              {I18n.t(panel.name.en).toUpperCase()}
+            </Text>
+            {rendered_panel}
+          </LinearGradient>
         </View>
       </TouchableWithoutFeedback>
     );
@@ -129,27 +136,48 @@ RoomPanelCard.contextTypes = {
 };
 
 const styles = StyleSheet.create({
-  card: {
+  card_container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
-    borderRadius: 5,
-    padding: 10,
+    borderRadius: 15,
+    overflow: 'hidden',
     margin: 10,
-    marginBottom: 0,
     elevation: 5,
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
+    shadowOpacity: 0.15,
+    shadowRadius: 7,
     shadowColor: '#000000',
-    shadowOffset: { height: 2, width: 0 },
+    shadowOffset: { height: 2, width: 0}
   },
-  card_pressed: {
-    marginLeft: 0,
-    marginRight: 0,
+  card: {
+    padding: 10
   },
   card_name: {
-    fontSize: 20,
-    marginBottom: 10,
-  },
+    backgroundColor: 'rgba(0, 0, 0, 0)',
+    // fontWeight: 'bold',
+    color: '#FFFFFF',
+    fontSize: 17,
+    fontFamily: 'CeraPRO-Bold'
+  }
+  // card: {
+  //   flex: 1,
+  //   backgroundColor: '#FFFFFF',
+  //   borderRadius: 5,
+  //   padding: 10,
+  //   margin: 10,
+  //   marginBottom: 0,
+  //   elevation: 5,
+  //   shadowOpacity: 0.25,
+  //   shadowRadius: 3,
+  //   shadowColor: '#000000',
+  //   shadowOffset: { height: 2, width: 0 },
+  // },
+  // card_pressed: {
+  //   marginLeft: 0,
+  //   marginRight: 0,
+  // },
+  // card_name: {
+  //   fontSize: 20,
+  //   marginBottom: 10,
+  // },
 });
 
 module.exports = RoomPanelCard;

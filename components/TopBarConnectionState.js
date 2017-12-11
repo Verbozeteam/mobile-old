@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
     color: '#FFFFFF',
+    fontFamily: 'CeraPro-Regular',
     backgroundColor: 'rgba(0, 0, 0, 0)'
   }
 });
