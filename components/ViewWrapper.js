@@ -11,7 +11,7 @@ export function ViewWrapper(ChildView) {
       return (
         <View style={styles.contianer}>
           <TopBar {...this.props}/>
-          <ChildView/>
+          <ChildView {...this.props}/>
         </View>
       );
     }
