@@ -52,7 +52,7 @@ class TopBarConnectionState extends React.Component<PropsType, StateType> {
     });
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: PropsType) {
     clearTimeout(this._timeout);
     clearInterval(this._interval);
 
