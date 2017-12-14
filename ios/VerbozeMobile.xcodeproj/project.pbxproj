@@ -39,6 +39,7 @@
 		3F3CAC8A6D0E455982A47BAE /* libBVLinearGradient.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0CFA52E6FB0041E28DF94CD4 /* libBVLinearGradient.a */; };
 		465DBF3E4E0F4DDDAE8C3D70 /* CeraPRO-Black.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 395E3CACC393433FA71BA25C /* CeraPRO-Black.ttf */; };
 		4C1F39F245574EF0B072AA80 /* HKNova-MediumR.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 6C50005DC4DD4B6DA4739B4E /* HKNova-MediumR.ttf */; };
+		58FBAC554B9C417CAF2E7893 /* libRCTCamera.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A632E5C1B352438B8B9BA2BE /* libRCTCamera.a */; };
 		5E9157361DD0AC6A00FF2AA8 /* libRCTAnimation.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5E9157331DD0AC6500FF2AA8 /* libRCTAnimation.a */; };
 		5FEED6C1694643818A489BDD /* CeraPRO-ThinItalic.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 477C4AB75BB647FE8631B58A /* CeraPRO-ThinItalic.ttf */; };
 		6463C577CDF94923950E12A2 /* CeraPRO-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7F6F81E8D21B4351B3C7D55A /* CeraPRO-Medium.ttf */; };
@@ -258,6 +259,13 @@
 			remoteGlobalIDString = 9936F32F1F5F2E5B0010BF04;
 			remoteInfo = "privatedata-tvOS";
 		};
+		539A7F781FDEC835004CAF63 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = F5B4235370EA41C897763833 /* RCTCamera.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = 4107012F1ACB723B00C6AA39;
+			remoteInfo = RCTCamera;
+		};
 		5E9157321DD0AC6500FF2AA8 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 5E91572D1DD0AC6500FF2AA8 /* RCTAnimation.xcodeproj */;
@@ -389,6 +397,9 @@
 		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
 		F5B4235370EA41C897763833 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; name = "RCTCamera.xcodeproj"; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
 		A632E5C1B352438B8B9BA2BE /* libRCTCamera.a */ = {isa = PBXFileReference; name = "libRCTCamera.a"; path = "libRCTCamera.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		A632E5C1B352438B8B9BA2BE /* libRCTCamera.a */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = archive.ar; path = libRCTCamera.a; sourceTree = "<group>"; };
+		ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = RCTBlob.xcodeproj; path = "../node_modules/react-native/Libraries/Blob/RCTBlob.xcodeproj"; sourceTree = "<group>"; };
+		F5B4235370EA41C897763833 /* RCTCamera.xcodeproj */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = "wrapper.pb-project"; name = RCTCamera.xcodeproj; path = "../node_modules/react-native-camera/ios/RCTCamera.xcodeproj"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -582,6 +593,14 @@
 			name = Resources;
 			sourceTree = "<group>";
 		};
+		539A7F751FDEC835004CAF63 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				539A7F791FDEC835004CAF63 /* libRCTCamera.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 		5E91572E1DD0AC6500FF2AA8 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -662,6 +681,7 @@
 			children = (
 				0CFA52E6FB0041E28DF94CD4 /* libBVLinearGradient.a */,
 				0CBC21B08A524BD1A32182B4 /* libRNSVG.a */,
+				A632E5C1B352438B8B9BA2BE /* libRCTCamera.a */,
 			);
 			name = "Recovered References";
 			sourceTree = "<group>";
@@ -825,6 +845,10 @@
 				{
 					ProductGroup = ADBDB9201DFEBF0600ED6528 /* Products */;
 					ProjectRef = ADBDB91F1DFEBF0600ED6528 /* RCTBlob.xcodeproj */;
+				},
+				{
+					ProductGroup = 539A7F751FDEC835004CAF63 /* Products */;
+					ProjectRef = F5B4235370EA41C897763833 /* RCTCamera.xcodeproj */;
 				},
 				{
 					ProductGroup = 00C302B61ABCB90400DB3ED1 /* Products */;

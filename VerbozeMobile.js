@@ -18,6 +18,7 @@ import { WebSocketDataType, ConfigType } from './config/ConnectionTypes';
 function mapStateToProps(state: Object) {
   return {
     connection_state: state.connection.connection_state,
+    ws_url: state.connection.ws_url,
     config: state.connection.config,
   };
 }
@@ -37,12 +38,9 @@ function mapDispatchToProps(dispatch: Function) {
 }
 
 class VerbozeMobile extends React.Component<any, any> {
-  _ws_url: string = 'wss://www.verboze.com/stream/';
-  _ws_token: string = '35b4d595ef074543a2fa686650024d98';
-
   _Navigation: React.Component;
 
-  componentWillMount() : any {
+  componentWillMount() {
     /* bind websocket callbacks */
     WebSocketCommunication.setOnConnected(this.onConnected.bind(this));
     WebSocketCommunication.setOnDisconnected(this.onDisconnected.bind(this));
@@ -56,21 +54,39 @@ class VerbozeMobile extends React.Component<any, any> {
     }
   }
 
-  componentDidMount() : any {
+  componentDidMount() {
+    const { ws_url } = this.props;
+
     /* connect websocket */
-    this.connect();
+    this.connect(ws_url);
+  }
+
+  componentWillReceiveProps(nextProps) {
+    const { ws_url } = this.props;
+
+    if (ws_url !== nextProps.ws_url) {
+      this.disconnect();
+      this.connect(nextProps.ws_url);
+    }
   }
 
   /* websocket connect */
-  connect() : any {
+  connect(ws_url) {
     const { setConnectionState } = this.props;
 
-    WebSocketCommunication.connect(this._ws_url + this._ws_token + '/');
+    WebSocketCommunication.connect(ws_url);
     setConnectionState(1);
   }
 
+  disconnect() {
+    const { setConnectionState } = this.props;
+
+    WebSocketCommunication.disconnect();
+    setConnectionState(0);
+  }
+
   /* websocket callback on connect event */
-  onConnected() : any {
+  onConnected() {
     const { setConnectionState } = this.props;
     setConnectionState(2);
 
@@ -81,7 +97,7 @@ class VerbozeMobile extends React.Component<any, any> {
   }
 
   /* websocket callback on disconnect event */
-  onDisconnected() : any {
+  onDisconnected() {
     const { setConnectionState, setConfig } = this.props;
     setConnectionState(0);
     setConfig(null);
@@ -90,7 +106,7 @@ class VerbozeMobile extends React.Component<any, any> {
   }
 
   /* websocket callback on message event */
-  onMessage(data: WebSocketDataType) : any {
+  onMessage(data: WebSocketDataType) {
     const { setConfig, setThingsStates } = this.props;
 
     /* set config if provided */

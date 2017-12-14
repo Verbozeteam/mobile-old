@@ -1,17 +1,20 @@
 /* @flow */
 
 import { SET_CONNECTION_STATE,
-         SET_CONFIG }
+         SET_CONFIG,
+         SET_WEBSOCKET_URL }
          from '../actions/connection';
 
 type StateType = {
   connection_state: 0 | 1 | 2,
+  token: string,
   config: Object
 }
 
 const defaultState: StateType = {
   /* 0 - not connected, 1 - connecting, 2 - connected */
   connection_state: 0,
+  ws_url: 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98',
   config: {}
 };
 
@@ -31,6 +34,11 @@ module.exports = (state: StateType = defaultState, action: Object) => {
     /* sets config */
     case SET_CONFIG:
       new_state.config = action.config;
+      break;
+
+    /* set WebSocket token */
+    case SET_WEBSOCKET_URL:
+      new_state.ws_url = action.ws_url;
       break;
   }
 

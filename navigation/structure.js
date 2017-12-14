@@ -5,22 +5,33 @@ import { Image } from 'react-native';
 
 const { ViewWrapper } = require('../components/ViewWrapper');
 const RoomsView = require('../components/RoomsView');
+const QRView = require('../components/QRView');
 const AccountView = require('../components/AccountView');
 
 export const structure = {
   Rooms: {
     screen: ViewWrapper(RoomsView),
     navigationOptions: {
-      title: 'Rooms',
-      tabBarIcon: <Image source={require('../assets/images/room_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>
+      tabBarIcon: <Image source={require('../assets/images/room_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>,
+      tabBarLabel: 'Rooms',
+      drawerLabel: 'Rooms'
+    }
+  },
+
+  ScanQR: {
+    screen: ViewWrapper(QRView),
+    navigationOptions: {
+      tabBarLabel: 'Scan QR',
+      drawerLabel: 'Scan QR'
     }
   },
 
   Account: {
     screen: ViewWrapper(AccountView),
     navigationOptions: {
-      title: 'Account',
-      tabBarIcon: <Image source={require('../assets/images/cog_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>
+      tabBarIcon: <Image source={require('../assets/images/cog_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>,
+      tabBarLabel: 'Account',
+      drawerLabel: 'Account'
     }
   }
 };
