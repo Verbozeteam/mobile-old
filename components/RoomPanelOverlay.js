@@ -1,48 +1,88 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, ScrollView, Text, StyleSheet, Dimensions, Image, LayoutAnimation, Platform, UIManager, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, StyleSheet, Platform, UIManager, ScrollView,
+  LayoutAnimation } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
 const PanelsActions = require('../actions/panels');
 
-const LightsPanel = require('./LightsPanel');
-const RoomPanelCard = require('./RoomPanelCard');
+import { isIphoneX } from 'react-native-iphone-x-helper';
+import LinearGradient from 'react-native-linear-gradient';
 
 const I18n = require('../i18n/i18n');
+
+const RoomPanelCard = require('./RoomPanelCard');
 
 function mapStateToProps(state: Object) {
   return {
     overlaying_room_name: state.panels.overlaying_room_name,
     overlaying_panel_name: state.panels.overlaying_panel_name,
     background_layout: state.panels.background_layout,
-    config: state.connection.config,
+    config: state.connection.config
   };
 }
+
+type PropsType = {
+  margin: number,
+  position: {
+    x: number,
+    y: number
+  }
+};
 
 type StateType = {
   /**
    * 0: no panel is selected for overlay, render one if available
    * 1: a panel has been rendered small, render the big one now
    * 2: big panel has been rendered, and should be collapsing now
-   * 3: big panel finished collapsing, stop the render
+   * 3: big panel finished collapsing
+   * 4: panel will stop rendering
    */
   animation_stage: number,
-}
+  close_button_pressed: boolean
+};
 
-class RoomPanelOverlay extends React.Component<any, StateType> {
-  state = {
-    animation_stage: 0,
+class RoomPanelOverlay extends React.Component<PropsType, StateType> {
+
+  static defaultProps = {
+    margin: 10
   };
 
-  _cancel_image = require('../assets/images/close.png');
+  state = {
+    animation_stage: 0,
+    close_button_pressed: false
+  };
 
-  constructor(props: any) {
-    super(props);
+  _detail_layout;
+  _close_button_gradient: [string, string] = ['#EB4755', '#950011'];
+  _close_button_highlight: [string, string] = ['#FF5B69', '#A90E25'];
 
-    if (Platform.OS === 'android')
+  componentWillMount() {
+    this.calculateLayout();
+
+    if (Platform.OS === 'android') {
       UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }
+
+  calculateLayout() {
+    const { margin, background_layout, position } = this.props;
+
+    this._collapsed_layout = {
+      position: 'absolute',
+      height: background_layout.height,
+      width: background_layout.width,
+      top: background_layout.y - position.y,
+      left: background_layout.x - position.x,
+      borderRadius: 5,
+    }
+
+    this._detail_layout = {
+      flex: 1,
+      margin,
+    };
   }
 
   findSelectedPanel() {
@@ -86,88 +126,88 @@ class RoomPanelOverlay extends React.Component<any, StateType> {
   }
 
   animationFrame() {
+    const { animation_stage } = this.state;
+
     LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
     this.setState({
-      animation_stage: (this.state.animation_stage + 1) % 4,
+      animation_stage: (animation_stage + 1) % 5,
     });
 
-    if (this.state.animation_stage == 3)
-      this.context.store.dispatch(PanelsActions.set_overlaying_panel("", "", {}));
+    if (animation_stage === 3) {
+      this.context.store.dispatch(PanelsActions.set_overlaying_panel('', '', {}));
+    }
+   }
+
+  closePressedIn() {
+    this.setState({
+      close_button_pressed: true
+    });
+  }
+
+  closeOverlay() {
+    this.animationFrame();
   }
 
   render() {
-    const { background_layout } = this.props;
-    const { animation_stage } = this.state;
+    const { background_layout, hidden } = this.props;
+    const { animation_stage, close_button_pressed } = this.state;
 
     var room = this.findSelectedRoom();
     var panel = this.findSelectedPanel();
 
-    if (!panel)
+    if (!room || !panel) {
       return <View />;
-
-    var panel_layout = {
-      left: 0,
-      top: 0,
-      borderRadius: 0,
-      width: Dimensions.get('screen').width,
-      height: Dimensions.get('screen').height,
-      backgroundColor: '#ffffff',
-    };
-    if (animation_stage == 0 || animation_stage == 2 || animation_stage == 3) {
-      if (!(animation_stage == 0 && Object.keys(background_layout).length == 0))
-        requestAnimationFrame(this.animationFrame.bind(this));
-      panel_layout = {
-        left: background_layout.x,
-        top: background_layout.y,
-        width: background_layout.width,
-        height: background_layout.height,
-        borderRadius: 15,
-        backgroundColor: '#ffffff',
-      };
     }
 
-    var header = null;
-    // if (animation_stage == 1) {
-    //   header = (
-    //     <View style={styles.header_container}>
-    //       <Text style={styles.header_text}>{I18n.t(panel.name.en)}</Text>
-    //       <View style={styles.cancel_container}>
-    //         <TouchableWithoutFeedback
-    //             onPressIn={this.animationFrame.bind(this)}>
-    //           <Image style={styles.cancel_image}
-    //             resizeMode='contain'
-    //             source={this._cancel_image}>
-    //           </Image>
-    //         </TouchableWithoutFeedback>
-    //       </View>
-    //     </View>
-    //   );
-    // }
-    if (animation_stage == 1) {
-      header = (
-        <View style={styles.cancel_container}>
-          <TouchableWithoutFeedback
-              onPressIn={this.animationFrame.bind(this)}>
-            <Image style={styles.cancel_image}
-              resizeMode='contain'
-              source={this._cancel_image}>
-            </Image>
-          </TouchableWithoutFeedback>
+    var close_button_gradient = this._close_button_gradient;
+    if (close_button_pressed) {
+      close_button_gradient = this._close_button_highlight;
+    }
+
+    var panel_layout = this._collapsed_layout;
+    var bottom: React.Component = null;
+
+    if (animation_stage === 0 || animation_stage === 2 || animation_stage === 3) {
+      if (!(animation_stage === 0 &&
+        Object.keys(background_layout).length == 0)) {
+
+        /* advance animation frame */
+        requestAnimationFrame(this.animationFrame.bind(this));
+      }
+    }
+
+    else {
+      panel_layout = this._detail_layout;
+
+      bottom = (
+        <View style={styles.bottom}>
+          <View onTouchStart={this.closePressedIn.bind(this)}
+            onTouchEnd={this.closeOverlay.bind(this)}
+            style={styles.close_button}>
+            <LinearGradient colors={close_button_gradient}
+              start={{x: 0, y: 0}} end={{x: 1, y: 1}} style={{flex: 1}}>
+              <Text style={styles.close_button_text}>
+                Close
+              </Text>
+            </LinearGradient>
+          </View>
         </View>
       );
     }
 
     return (
-      <View style={styles.container}>
-        <View style={[styles.card_container, panel_layout]}>
-          <RoomPanelCard key={'panel-overlay'}
-            panel={panel}
-            roomConfig={room}
-            viewType={(animation_stage == 1) ? 'detail' : 'collapsed'}
-            layout={{margin: 0}} />
+      <View style={styles.full_container}>
+        <View style={styles.container}>
+          <ScrollView showsVerticalScrollIndicator={false}
+            style={[styles.panel, panel_layout]}>
+            <RoomPanelCard key={'panel-overlay'}
+              panel={panel}
+              roomConfig={room}
+              viewType={(animation_stage == 1) ? 'detail' : 'collapsed'} />
+          </ScrollView>
+          {bottom}
         </View>
-        {header}
       </View>
     );
   }
@@ -178,34 +218,45 @@ RoomPanelOverlay.contextTypes = {
 };
 
 const styles = StyleSheet.create({
+  full_container: {
+    flex: 1,
+  },
   container: {
-    width: '100%',
-    height: '100%',
-    flexDirection: 'column',
-    justifyContent: 'center',
-    alignItems: 'center',
+    flex: 1,
+    overflow: 'hidden'
+  },
+  panel: {
+    borderRadius: 5,
+    overflow: 'hidden'
+  },
+  header: {
+
   },
   header_text: {
-    color: '#000000',
-    fontSize: 32,
-    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0)'
   },
-  cancel_container: {
-    position: 'absolute',
-    width: 60,
-    height: 60,
-    bottom: 10,
-    borderRadius: 60,
-    borderWidth: 1,
-    borderColor: '#000000',
+  bottom: {
+    height: 50,
+    paddingRight: 10,
+    paddingLeft: 10,
+    width: '100%',
+    bottom: 0,
+    alignItems: 'center',
   },
-  cancel_image: {
-    flex: 1,
-    width: undefined,
-    height: undefined,
+  close_button: {
+    borderRadius: 5,
+    width: '100%',
+    height: 40,
+    justifyContent: 'center',
+    overflow: 'hidden',
   },
-  card_container: {
-    position: 'absolute',
+  close_button_text: {
+    marginTop: 10,
+    textAlign: 'center',
+    fontFamily: 'CeraPRO-Bold',
+    color: '#FFFFFF',
+    fontSize: 17,
+    backgroundColor: 'rgba(0, 0, 0, 0)'
   }
 });
 

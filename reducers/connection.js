@@ -15,8 +15,12 @@ const defaultState: StateType = {
   config: {}
 };
 
+const cloneObject = (object: Object): Object => {
+  return JSON.parse(JSON.stringify(object));
+}
+
 module.exports = (state: StateType = defaultState, action: Object) => {
-  var new_state: StateType = {...state};
+  var new_state: StateType = cloneObject(state);
 
   switch(action.type) {
     /* set WebSocket connection state */

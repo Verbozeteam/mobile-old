@@ -6,6 +6,7 @@ import { View, Text, Image, StyleSheet, Platform, StatusBar }
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
+import { isIphoneX } from 'react-native-iphone-x-helper'
 import LinearGradient from 'react-native-linear-gradient';
 
 const TopBarConnectionState = require('./TopBarConnectionState');
@@ -42,7 +43,7 @@ function mapDispatchToProps(dispatch: Function) {
 class TopBar extends React.Component<PropsType, StateType> {
 
   static defaultProps = {
-    backgroundColor: '#181B31',
+    backgroundColor: '#182434',
   };
 
   _height: number = 80;
@@ -84,8 +85,13 @@ class TopBar extends React.Component<PropsType, StateType> {
     }
 
     else {
+
       /* set iOS status bar height - it is always 20 */
-      this._status_bar_height = 20;
+      if (isIphoneX()) {
+        this._status_bar_height = 44;
+      } else {
+        this._status_bar_height = 20;
+      }
     }
 
     this._hotel_logo = require('../assets/millennium/logo.png');
@@ -103,9 +109,11 @@ class TopBar extends React.Component<PropsType, StateType> {
       height: this._height,
     };
 
+    const photo_height: number = this._height + ((isIphoneX()) ? 44 : 0);
+
     this._hotel_photo_layout = {
-      height: this._height,
-      width: this._hotel_photo_width / (this._hotel_photo_height / this._height),
+      height: photo_height,
+      width: this._hotel_photo_width / (this._hotel_photo_height / photo_height),
     };
 
     this._hotel_logo_layout = {
@@ -119,19 +127,23 @@ class TopBar extends React.Component<PropsType, StateType> {
 
     const room_number = '314';
 
-    console.log(this._hotel_logo_layout);
+    const hotel_photo = (
+      <View style={this._hotel_photo_layout}>
+        <Image source={this._hotel_photo} style={this._hotel_photo_layout} resizeMode={'contain'} />
+      </View>
+    );
 
     return (
       <View style={[styles.container, this._container_layout, {backgroundColor}]}>
         {/* ^ outside container bleeds underneath OS status bar */}
 
+        {(isIphoneX()) ? hotel_photo : null}
+
         {/* content container starts right underneath OS status bar */}
         <View style={[styles.content, this._content_layout]}>
 
-          {/* hotel photo wrapped in View for positioning */}
-          <View style={this._hotel_photo_layout}>
-            <Image source={this._hotel_photo} style={this._hotel_photo_layout} resizeMode={'contain'} />
-          </View>
+
+          {(isIphoneX()) ? null : hotel_photo}
 
           {/* gradient on top of photo */}
           <LinearGradient colors={['transparent', backgroundColor]}
@@ -163,8 +175,8 @@ const styles = StyleSheet.create({
   container: {
     width: '100%',
     elevation: 5,
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
+    shadowOpacity: 1,
+    shadowRadius: 5,
     shadowColor: '#000000',
     shadowOffset: { height: 2, width: 0 },
   },
@@ -200,8 +212,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     bottom: 10,
     right: 10,
-    fontSize: 17,
-    fontWeight: 'bold',
+    fontSize: 20,
+    fontFamily: 'CeraPRO-Bold',
     color: '#FFFFFF'
   }
 });

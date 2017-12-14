@@ -19,7 +19,6 @@ function mapStateToProps(state: Object) {
   return {
     connection_state: state.connection.connection_state,
     config: state.connection.config,
-    overlay: state.panels.overlaying_room_name
   };
 }
 
@@ -52,7 +51,8 @@ class VerbozeMobile extends React.Component<any, any> {
     /* change status bar to light */
     StatusBar.setBarStyle('light-content', true);
     if (Platform.OS === 'android') {
-      StatusBar.setBackgroundColor('#13162b', true);
+      // TODO: update this color
+      // StatusBar.setBackgroundColor('#13162b', true);
     }
   }
 
@@ -74,6 +74,7 @@ class VerbozeMobile extends React.Component<any, any> {
     const { setConnectionState } = this.props;
     setConnectionState(2);
 
+    console.log('sending code 0');
     WebSocketCommunication.sendMessage({
       code: 0
     });
@@ -84,6 +85,8 @@ class VerbozeMobile extends React.Component<any, any> {
     const { setConnectionState, setConfig } = this.props;
     setConnectionState(0);
     setConfig(null);
+
+    this.connect();
   }
 
   /* websocket callback on message event */
@@ -109,10 +112,6 @@ class VerbozeMobile extends React.Component<any, any> {
     return (
       <View style={styles.container}>
         <Navigation />
-        <View pointerEvents={(overlay) ? 'auto' : 'none'}
-          style={styles.overlay}>
-          <RoomPanelOverlay />
-        </View>
       </View>
     );
   }
@@ -145,8 +144,6 @@ import { Provider } from 'react-redux';
 const ConnectionReducer = require('./reducers/connection');
 const ThingsReducer = require('./reducers/things');
 const PanelsReducer = require('./reducers/panels');
-
-const RoomPanelOverlay = require('./components/RoomPanelOverlay');
 
 const STORE = createStore(combineReducers({
   connection: ConnectionReducer,
