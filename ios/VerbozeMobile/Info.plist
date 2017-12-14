@@ -2,10 +2,12 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSCameraUsageDescription</key>
+	<string>VerbozeMobile would like to access your camera</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-	<string>VerbozeMobile</string>
+	<string>Verboze</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -38,10 +40,22 @@
 	<key>NSCameraUsageDescription</key>
 	<string>VerbozeMobile would like to access your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string/>
 	<key>UIAppFonts</key>
 	<array>
 		<string>HKNova-MediumR.ttf</string>
+		<string>CeraPRO-Black.ttf</string>
+		<string>CeraPRO-BlackItalic.ttf</string>
+		<string>CeraPRO-Bold.ttf</string>
+		<string>CeraPRO-BoldItalic.ttf</string>
+		<string>CeraPRO-Light.ttf</string>
+		<string>CeraPRO-LightItalic.ttf</string>
+		<string>CeraPRO-Medium.ttf</string>
+		<string>CeraPRO-MediumItalic.ttf</string>
+		<string>CeraPRO-Regular.ttf</string>
+		<string>CeraPRO-RegularItalic.ttf</string>
+		<string>CeraPRO-Thin.ttf</string>
+		<string>CeraPRO-ThinItalic.ttf</string>
 	</array>
 	<key>UILaunchStoryboardName</key>
 	<string>LaunchScreen</string>

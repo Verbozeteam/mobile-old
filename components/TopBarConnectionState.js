@@ -52,7 +52,7 @@ class TopBarConnectionState extends React.Component<PropsType, StateType> {
     });
   }
 
-  componentWillReceiveProps(nextProps: Props) {
+  componentWillReceiveProps(nextProps: PropsType) {
     clearTimeout(this._timeout);
     clearInterval(this._interval);
 
@@ -98,6 +98,7 @@ const styles = StyleSheet.create({
   text: {
     marginLeft: 5,
     color: '#FFFFFF',
+    fontFamily: 'CeraPro-Regular',
     backgroundColor: 'rgba(0, 0, 0, 0)'
   }
 });
