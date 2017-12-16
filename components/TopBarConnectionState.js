@@ -61,13 +61,10 @@ class TopBarConnectionState extends React.Component<PropsType, StateType> {
       animated_dots: ''
     });
 
-    if (nextProps.connection_state == 1) {
-      this._interval = setInterval(() => this.animateTextDots(), 150);
-    }
-
-    else {
+    if (nextProps.connection_state == 1)
+      this._interval = setInterval(() => this.animateTextDots(), 500);
+    else
       this._timeout = setTimeout(() => this.hideText(), 3000);
-    }
   }
 
   render() {
@@ -77,7 +74,7 @@ class TopBarConnectionState extends React.Component<PropsType, StateType> {
     return (
       <View style={styles.container}>
         <View style={[styles.dot, {backgroundColor: color}]}></View>
-        <Text style={styles.text}>{(display_text) ? text + animated_dots : ''}</Text>
+        <Text style={styles.text}>{display_text ? (text + animated_dots) : ''}</Text>
       </View>
     );
   }

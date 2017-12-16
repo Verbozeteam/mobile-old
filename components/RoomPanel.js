@@ -40,9 +40,7 @@ class Room extends React.Component<PropsType, StateType> {
   }
 
   handleScroll(event: Object) {
-    console.log(event.nativeEvent.contentOffset.y);
     if (this.state.selectedCard === -1) {
-      console.log("saving!");
       this._last_scroll_y = event.nativeEvent.contentOffset.y;
     }
   }
@@ -57,7 +55,6 @@ class Room extends React.Component<PropsType, StateType> {
         this.refs.scrollView.scrollTo({x: 0, y: 210*panelIndex, animated: true});
       }).bind(this));
     } else {
-      console.log("going to ", this._last_scroll_y);
       this.refs.scrollView.scrollTo({x: 0, y: this._last_scroll_y, animated: true});
     }
   }

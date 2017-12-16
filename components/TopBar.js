@@ -1,10 +1,12 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, Image, StyleSheet, Platform, StatusBar }
+import { View, Text, Image, StyleSheet, Platform, StatusBar, TouchableOpacity }
   from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
+
+const ConnectionActions = require('../actions/connection');
 
 import { isIphoneX } from 'react-native-iphone-x-helper'
 import LinearGradient from 'react-native-linear-gradient';
@@ -21,8 +23,11 @@ type PropsType = {
   },
   connection_state: 0 | 1 | 2,
   config: Object,
+  qr_reader_on: boolean,
 
-  backgroundColor: string
+  backgroundColor: string,
+
+  setQRReaderState: (boolean) => null,
 };
 
 type StateType = {};
@@ -30,13 +35,14 @@ type StateType = {};
 function mapStateToProps(state: Object) {
   return {
     connection_state: state.connection.connection_state,
-    config: state.connection.config
+    config: state.connection.config,
+    qr_reader_on: state.connection.qr_reader_on,
   };
 }
 
 function mapDispatchToProps(dispatch: Function) {
   return {
-
+    setQRReaderState: (isOn: boolean) => dispatch(ConnectionActions.setQRReaderState(isOn)),
   };
 }
 
@@ -64,6 +70,8 @@ class TopBar extends React.Component<PropsType, StateType> {
   _container_layout: LayoutType;
   _content_layout: LayoutType;
   _hotel_photo_layout: LayoutType;
+
+  _scan_qr_photo = require('../assets/images/scan_qr.png');
 
   componentWillMount() {
     const { navigation } = this.props;
@@ -122,6 +130,10 @@ class TopBar extends React.Component<PropsType, StateType> {
     }
   }
 
+  onScanQR() {
+    this.props.setQRReaderState(!this.props.qr_reader_on);
+  }
+
   render() {
     const { backgroundColor, connection_state } = this.props;
 
@@ -165,6 +177,12 @@ class TopBar extends React.Component<PropsType, StateType> {
           <Text style={styles.room_number}>
             Room {room_number}
           </Text>
+
+          <View style={[styles.scan_qr_container]}>
+            <TouchableOpacity onPress={this.onScanQR.bind(this)}>
+              <Image source={this._scan_qr_photo} style={styles.scan_qr_icon} />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     );
@@ -206,15 +224,26 @@ const styles = StyleSheet.create({
   hotel_logo: {
     position: 'absolute',
     top: 10,
-    right: 10
+    right: 80
   },
   room_number: {
     position: 'absolute',
     bottom: 10,
-    right: 10,
+    right: 80,
     fontSize: 20,
     fontFamily: 'CeraPRO-Bold',
     color: '#FFFFFF'
+  },
+  scan_qr_container: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    width: 60,
+    height: 60,
+  },
+  scan_qr_icon: {
+    width: 60,
+    height: 60,
   }
 });
 

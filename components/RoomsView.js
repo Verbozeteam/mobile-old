@@ -5,15 +5,19 @@ import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
+import { ConnectionInstructions } from './ConnectionInstructions';
+
 import { LayoutType } from '../config/flowtypes';
 
 import LinearGradient from 'react-native-linear-gradient';
 
 const RoomPanel = require('./RoomPanel');
+const QRView = require('./QRView');
 
 function mapStateToProps(state: Object) {
   return {
     config: state.connection.config,
+    qr_reader_on: state.connection.qr_reader_on,
   };
 }
 
@@ -22,11 +26,11 @@ type PropsType = {
   margin: number,
   bleed: number,
   config: Object,
+  qr_reader_on: boolean,
 };
 
 type StateType = {
   selected_room: number,
-  animated_dots: string,
   isFullscreenMode: boolean, // kinda full-screen, you know
 };
 
@@ -40,7 +44,6 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
   state = {
     selected_room: 0,
-    animated_dots: '',
     isFullscreenMode: false,
   };
 
@@ -54,18 +57,8 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
   _scroll_start_x: number = 0;
 
-  _interval: any = null;
-
   componentWillMount() {
     this.calculateRoomLayout();
-  }
-
-  componentWillReceiveProps(nextProps: PropsType) {
-    clearInterval(this._interval);
-
-    if (!nextProps.config || !nextProps.config.rooms) {
-      this._interval = setInterval(() => this.animateTextDots(), 350);
-    }
   }
 
   _onScrollBeginDrag(event: Object) {
@@ -118,14 +111,6 @@ class RoomsView extends React.Component<PropsType, StateType> {
     this.setApproximatedIndex(event.nativeEvent.contentOffset.x);
   }
 
-  animateTextDots() {
-    const { animated_dots } = this.state;
-
-    this.setState({
-      animated_dots: Array((animated_dots.length + 2) % 5).join('.')
-    })
-  }
-
   calculateRoomLayout() {
     const { margin, bleed } = this.props;
 
@@ -162,13 +147,13 @@ class RoomsView extends React.Component<PropsType, StateType> {
   }
 
   render() {
-    const { config, backgroundGradient, margin, bleed } = this.props;
-    const { selected_room, animated_dots, isFullscreenMode } = this.state;
+    const { config, backgroundGradient, margin, bleed, qr_reader_on } = this.props;
+    const { selected_room, isFullscreenMode } = this.state;
 
     var content = null;
 
     /* create rooms */
-    if (config && config.rooms) {
+    if (config && config.rooms && !qr_reader_on) {
       var rooms = [];
       for (var i = 0; i < config.rooms.length; i++) {
         var rooms_margin = {};
@@ -207,18 +192,10 @@ class RoomsView extends React.Component<PropsType, StateType> {
           {rooms}
         </ScrollView>
       );
+    } else if (qr_reader_on) {
+      content = <QRView />
     } else {
-      /* create room loading text */
-      content = (
-        <View style={styles.text_container}>
-          <Text style={styles.center_text}>
-            Connecting to room{animated_dots}
-          </Text>
-          <Text style={styles.center_subtext}>
-            Please wait
-          </Text>
-        </View>
-      );
+      content = <ConnectionInstructions />
     }
 
     return (

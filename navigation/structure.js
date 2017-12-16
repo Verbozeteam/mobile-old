@@ -18,14 +18,6 @@ export const structure = {
     }
   },
 
-  ScanQR: {
-    screen: ViewWrapper(QRView),
-    navigationOptions: {
-      tabBarLabel: 'Scan QR',
-      drawerLabel: 'Scan QR'
-    }
-  },
-
   Account: {
     screen: ViewWrapper(AccountView),
     navigationOptions: {

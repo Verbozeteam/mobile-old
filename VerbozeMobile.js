@@ -55,10 +55,8 @@ class VerbozeMobile extends React.Component<any, any> {
   }
 
   componentDidMount() {
-    const { ws_url } = this.props;
-
     /* connect websocket */
-    this.connect(ws_url);
+    this.connect();
   }
 
   componentWillReceiveProps(nextProps) {
@@ -66,13 +64,13 @@ class VerbozeMobile extends React.Component<any, any> {
 
     if (ws_url !== nextProps.ws_url) {
       this.disconnect();
-      this.connect(nextProps.ws_url);
+      this.connect();
     }
   }
 
   /* websocket connect */
-  connect(ws_url) {
-    const { setConnectionState } = this.props;
+  connect() {
+    const { setConnectionState, ws_url } = this.props;
 
     WebSocketCommunication.connect(ws_url);
     setConnectionState(1);
@@ -99,10 +97,10 @@ class VerbozeMobile extends React.Component<any, any> {
   /* websocket callback on disconnect event */
   onDisconnected() {
     const { setConnectionState, setConfig } = this.props;
-    setConnectionState(0);
+    //setConnectionState(0);
     setConfig(null);
 
-    this.connect();
+    setTimeout(this.connect.bind(this), 1000);
   }
 
   /* websocket callback on message event */

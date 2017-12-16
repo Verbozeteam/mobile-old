@@ -22,16 +22,13 @@ class QRView extends React.Component<PropsType, StateType> {
 
   componentWillUnmount() {
     this._unsubscribe();
-
-    console.log('unmounting');
   }
-
-  component
 
   _onRead(event) {
     const token = event.data;
 
     this.context.store.dispatch(connectionActions.setWebSocketUrl(token));
+    this.context.store.dispatch(connectionActions.setQRReaderState(false));
 
     this.setState({
       token
