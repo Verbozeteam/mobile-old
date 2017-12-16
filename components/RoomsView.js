@@ -199,12 +199,12 @@ class RoomsView extends React.Component<PropsType, StateType> {
     }
 
     return (
-      <LinearGradient colors={backgroundGradient}
+      <View colors={backgroundGradient}
         onLayout={this.onContainerLayoutChanged.bind(this)}
         start={{x: 0.5, y: 0}} end={{x: 0.5, y: 1}}
         style={styles.container}>
         {content}
-      </LinearGradient>
+      </View>
     );
   }
 }
@@ -219,6 +219,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#161819',
   },
   overlay: {
     position: 'absolute',

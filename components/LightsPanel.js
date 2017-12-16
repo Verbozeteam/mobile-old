@@ -38,11 +38,12 @@ class LightsPanel extends React.Component<PropsType>  {
         const { viewType, layout } = this.props;
 
         var dimmer_name = '';
-        var slider_width = layout.width - 40;
+        var slider_width = layout.width - 60;
         var slider_height = 30;
         if (viewType === 'detail') {
-            slider_height = 60;
+            slider_height = 50;
             dimmer_name = I18n.t(dimmer.name.en);
+            slider_width = layout.width - 140;
         }
 
         return <View
@@ -104,7 +105,7 @@ class LightsPanel extends React.Component<PropsType>  {
         return <View key={key}
             style={switch_styles.container}>
             <View key={key+'-container-container'}
-                style={switch_styles.container_container}>
+                style={switch_styles.container}>
                 <Text key={key+'-name'}
                     style={[switch_styles.name, viewType === 'detail' ? {height: 30} : {}]}>
                     {I18n.t("Presets")}
@@ -120,8 +121,13 @@ class LightsPanel extends React.Component<PropsType>  {
     render() {
         const { things, layout, presets, viewType } = this.props;
 
+        var preset;
         var dimmers = [];
         var switches = [];
+
+        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 )
+            preset = this.renderPresetsSwitch(presets);
+
         for (var i = 0; i < things.length; i++) {
             if (things[i].category === 'dimmers')
                 dimmers.push(this.renderDimmer(things[i]));
@@ -129,12 +135,9 @@ class LightsPanel extends React.Component<PropsType>  {
                switches.push(this.renderLightSwitch(things[i]));
         }
 
-        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 ) {
-            switches.push(this.renderPresetsSwitch(presets));
-        }
-
         return (
             <View style={styles.container}>
+                {preset}
                 {dimmers}
                 <View style={viewType === 'detail' ? [styles.switches_tall_container, {height: switches.length*100}] : styles.switches_container}>
                     {switches}
@@ -176,9 +179,9 @@ const dimmer_styles = StyleSheet.create({
     },
     name: {
         marginRight: 20,
-        fontSize: 20,
+        fontSize: 18,
         fontFamily: 'HKNova-MediumR',
-        color: '#000000',
+        color: '#ffffff',
         backgroundColor: '#00000000',
     },
 });
@@ -187,15 +190,18 @@ const switch_styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
         flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     container_container: {
         flexDirection: 'column',
         flex: 1,
     },
     name: {
-        fontSize: 20,
+        marginTop: -20,
+        fontSize: 18,
         fontFamily: 'HKNova-MediumR',
-        color: '#000000',
+        color: '#ffffff',
         textAlign: 'center',
         backgroundColor: '#00000000',
     }

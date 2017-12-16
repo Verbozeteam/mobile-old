@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   card: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#1A345F',
+    backgroundColor: '#2C3338',
   },
   content_container: {
     flex: 1,

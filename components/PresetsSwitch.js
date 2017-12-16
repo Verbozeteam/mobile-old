@@ -98,21 +98,15 @@ class PresetsSwitch extends React.Component<PropsType, StateType> {
         var actions = presets.map((p, i) => ((() => this.changePreset(i)).bind(this)));
 
         return (
-            <View style={styles.container}>
-                <View style={styles.slider_container}>
-                    <View style={styles.slider_container_container}>
-                        <GenericToggle values={values}
-                            orientation={"horizontal"}
-                            layout={{
-                                height: 50,
-                                width: 200,
-                            }}
-                            sameSameValue={true}
-                            actions={actions}
-                            selected={currentPresetIndex} />
-                    </View>
-                </View>
-            </View>
+            <GenericToggle values={values}
+                orientation={"horizontal"}
+                layout={{
+                    height: 50,
+                    width: 200,
+                }}
+                sameSameValue={true}
+                actions={actions}
+                selected={currentPresetIndex} />
         );
     }
 }
@@ -121,24 +115,6 @@ PresetsSwitch.contextTypes = {
 };
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        height: undefined,
-        width: undefined,
-    },
-    light_bulb: {
-        flex: 1,
-        width: undefined,
-        height: undefined,
-    },
-    slider_container: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    slider_container_container: {
-        position: 'absolute',
-    }
 });
 
 module.exports = PresetsSwitch;

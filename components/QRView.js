@@ -27,8 +27,7 @@ class QRView extends React.Component<PropsType, StateType> {
   _onRead(event) {
     const token = event.data;
 
-    this.context.store.dispatch(connectionActions.setWebSocketUrl(token));
-    this.context.store.dispatch(connectionActions.setQRReaderState(false));
+    this.context.store.dispatch(connectionActions.setWebSocketUrl(token, true));
 
     this.setState({
       token

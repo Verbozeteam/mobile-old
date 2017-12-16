@@ -22,10 +22,11 @@ export function setConfig(config: Object) {
 };
 
 /* set WebSocket token */
-export function setWebSocketUrl(ws_url: string) {
+export function setWebSocketUrl(ws_url: string, turn_off_qr: boolean = false) {
   return {
     type: SET_WEBSOCKET_URL,
-    ws_url
+    ws_url,
+    turn_off_qr,
   };
 };
 

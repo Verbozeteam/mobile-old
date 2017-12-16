@@ -49,7 +49,7 @@ function mapDispatchToProps(dispatch: Function) {
 class TopBar extends React.Component<PropsType, StateType> {
 
   static defaultProps = {
-    backgroundColor: '#182434',
+    backgroundColor: '#1D2429',
   };
 
   _height: number = 80;

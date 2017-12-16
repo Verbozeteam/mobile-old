@@ -43,6 +43,8 @@ module.exports = (state: StateType = defaultState, action: Object) => {
     /* set WebSocket token */
     case SET_WEBSOCKET_URL:
       new_state.ws_url = action.ws_url;
+      if (action.turn_off_qr)
+        new_state.qr_reader_on = false;
       break;
 
     case SET_QR_READER_STATE:
