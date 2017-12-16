@@ -120,7 +120,6 @@ class CentralAC extends React.Component<PropsType, StateType> {
     var center_text_sub = '';
     var room_temp_text = ' ';
     var hiding_style = {};
-    var center_text_layout = {};
 
     if (viewType === 'detail') {
       if (fan) {
@@ -139,14 +138,14 @@ class CentralAC extends React.Component<PropsType, StateType> {
           round={this.round.bind(this)}
           onMove={this.changeTemperature(false).bind(this)}
           onRelease={this.changeTemperature(true).bind(this)}
-          diameter={layout.height / 2.0}
+          diameter={layout.width / 1.3}
           disabled={fan === 0} />
       );
 
       toggles = (
         <GenericToggle values={this._fan_speeds}
           icon={this._fan_icon}
-          layout={{height: 60, width: layout.width - 40}}
+          layout={{height: 60, width: layout.width - 100}}
           actions={this._fan_actions}
           selected={fan} />
       );
@@ -157,49 +156,49 @@ class CentralAC extends React.Component<PropsType, StateType> {
 
       center_text_main = temp.toFixed(1) + '°C';
       center_text_sub = I18n.t('Room Temperature');
-      center_text_layout = {
-        top: 50,
-      }
     }
 
     return (
-      <View style={viewType === 'detail' ? styles.container : styles.container_sm}>
-        <View style={styles.slider_container}>
+      <View style={styles.container}>
+        <View style={styles.stack}>
           {slider}
-          <View style={[styles.center_text_container, center_text_layout]}>
+          <View style={styles.center_text_container}>
             <Text style={styles.center_text_sub}>{center_text_sub}</Text>
             <Text style={styles.center_text_main}>{center_text_main}</Text>
           </View>
         </View>
 
-        <View style={styles.toggles_container}>
+        <View style={[styles.stack, viewType === 'detail' ? styles.buttons_stack : {}]}>
+          <View style={styles.minus_container}>
+            <GenericButton
+              disabled={fan === 0 || set_pt == this._min_temp}
+              icon={require('../assets/images/minus.png')}
+              style={hiding_style}
+              layout={{width: 60, height: 60}}
+              action={() => {
+                this.changeTemperature(true)(Math.max(this._min_temp, this.state.set_pt - 0.5))
+              }} />
+          </View>
+
+          <View style={styles.plus_container}>
+            <GenericButton
+              disabled={fan === 0 || set_pt == this._max_temp}
+              icon={require('../assets/images/plus.png')}
+              style={hiding_style}
+              layout={{width: 60, height: 60}}
+              action={() => {
+                this.changeTemperature(true)(Math.min(this._max_temp, this.state.set_pt + 0.5))
+              }} />
+          </View>
+        </View>
+
+        <View style={styles.stack}>
           {toggles}
         </View>
 
-        <Text style={styles.room_temperature}>
-          {room_temp_text}
-        </Text>
-
-        <View style={styles.minus_container}>
-          <GenericButton
-            disabled={fan === 0 || set_pt == this._min_temp}
-            icon={require('../assets/images/minus.png')}
-            style={hiding_style}
-            action={() => {
-              this.changeTemperature(true)(Math.max(this._min_temp, this.state.set_pt - 0.5))
-            }} />
+        <View style={styles.stack}>
+          <Text style={styles.room_temperature}>{room_temp_text}</Text>
         </View>
-
-        <View style={styles.plus_container}>
-          <GenericButton
-            disabled={fan === 0 || set_pt == this._max_temp}
-            icon={require('../assets/images/plus.png')}
-            style={hiding_style}
-            action={() => {
-              this.changeTemperature(true)(Math.min(this._max_temp, this.state.set_pt + 0.5))
-            }} />
-        </View>
-
       </View>
     );
   }
@@ -215,53 +214,49 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center'
   },
-  container_sm: {
-    height: 130,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  slider_container: {
-    marginTop: -80,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  toggles_container: {
-    marginTop: 70,
-  },
-  room_temperature: {
-    marginTop: 20,
-    fontSize: 20,
-    color: '#333333',
-    fontFamily: 'HKNova-MediumR',
-    backgroundColor: '#00000000',
-  },
   center_text_container: {
+    width: '100%',
+    height: '100%',
     position: 'absolute',
     alignItems: 'center',
     justifyContent: 'center',
     flexDirection: 'column'
   },
+  stack: {
+    width: '100%',
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  buttons_stack: {
+    marginTop: -40,
+    height: 80,
+  },
+  minus_container: {
+      position: 'absolute',
+      left: 0,
+  },
+  plus_container: {
+      position: 'absolute',
+      right: 0,
+  },
+  room_temperature: {
+    marginTop: 20,
+    fontSize: 20,
+    color: '#aaaaaa',
+    fontFamily: 'HKNova-MediumR',
+    backgroundColor: '#00000000',
+  },
   center_text_main: {
     fontSize: 50,
-    color: '#000000',
+    color: '#ffffff',
     fontFamily: 'HKNova-MediumR',
     backgroundColor: '#00000000',
   },
   center_text_sub: {
     fontSize: 18,
-    color: '#333333',
+    color: '#aaaaaa',
     fontFamily: 'HKNova-MediumR',
     backgroundColor: '#00000000',
-  },
-  minus_container: {
-      position: 'absolute',
-      top: 240,
-      left: 15,
-  },
-  plus_container: {
-      position: 'absolute',
-      top: 240,
-      right: 15,
   },
 });
 

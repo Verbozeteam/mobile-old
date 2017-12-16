@@ -4,6 +4,8 @@ import * as React from 'react';
 import { View, Text, StyleSheet, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 
+import * as ConnectionTypes from '../config/ConnectionTypes';
+
 const I18n = require('../i18n/i18n');
 
 import LinearGradient from 'react-native-linear-gradient';
@@ -11,16 +13,14 @@ import LinearGradient from 'react-native-linear-gradient';
 const HotelControlsPanelContents = require('./HotelControlsPanelContents');
 const CentralAC = require('./CentralAC');
 const LightsPanel = require('./LightsPanel');
-const PanelsActions = require('../actions/panels');
 
 type PropsType = {
+  panel: ConnectionTypes.PanelType,
   backgroundGradient?: [string, string],
   highlightGradient?: [string, string],
-  active: boolean,
   viewType: string
 };
 type StateType = {
-  pressed: boolean
 };
 
 class RoomPanelCard extends React.Component<PropsType, StateType> {
@@ -28,57 +28,14 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
   static defaultProps = {
     backgroundGradient: ['#384D66', '#182434'],
     highlightGradient: ['#425770', '#222e3e'],
-    active: true,
     viewType: 'collapsed'
   };
 
   state = {
-    pressed: false
   }
 
   _container_ref: Object;
   _container_layout: LayoutType;
-
-  panelPressedIn() {
-    const { active, viewType } = this.props;
-
-    if (!active || viewType === 'detail') {
-      return;
-    }
-
-    this.setState({
-      pressed: true
-    });
-  }
-
-  panelPressedOut() {
-    const { active, viewType } = this.props;
-
-    if (!active || viewType === 'detail') {
-      return;
-    }
-
-    this.setState({
-      pressed: false
-    });
-  }
-
-  panelPressed() {
-    const { onPress, active, roomConfig, panel } = this.props;
-    const { store } = this.context;
-
-    if (!active) {
-      return;
-    }
-
-    this._measure(() => {
-      store.dispatch(
-        PanelsActions.set_overlaying_panel(
-          roomConfig.name.en, panel.name.en, this._container_layout
-        )
-      );
-    });
-  }
 
   _measure(callback) {
     this._container_ref.measure((x, y, width, height, pageX, pageY) => {
@@ -91,9 +48,8 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
   }
 
   render() {
-    const { panel, highlightGradient, active, viewType } = this.props;
+    const { panel, highlightGradient, viewType } = this.props;
     var { backgroundGradient } = this.props;
-    const { pressed } = this.state;
 
     const header: React.Component = (
       <View style={styles.header}>
@@ -112,7 +68,7 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
             <LightsPanel
               things={panel.things}
               viewType={viewType}
-              layout={{width: 200}}
+              layout={{width: Dimensions.get('screen').width-10}}
               presets={panel.presets} />
           );
           break;
@@ -127,14 +83,11 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
           content = (
             <CentralAC
               id={panel.things[0].id}
-              viewType={viewType} />
+              viewType={viewType}
+              layout={{height: Dimensions.get('screen').height-250, width: Dimensions.get('screen').width-10}} />
           );
           break;
       }
-    }
-
-    if (pressed) {
-      backgroundGradient = highlightGradient;
     }
 
     // TODO: flex: 1 doesn't work on Android, the container's height comes from
@@ -149,23 +102,17 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
     }
 
     return (
-      <TouchableWithoutFeedback
-        onPressIn={this.panelPressedIn.bind(this)}
-        onPressOut={this.panelPressedOut.bind(this)}
-        onPress={this.panelPressed.bind(this)}>
-        <View ref={c => this._container_ref = c}
-          pointerEvents={(viewType === 'detail') ? 'box-none' : 'box-only'}
-          style={[styles.container, container]}>
-          <LinearGradient colors={backgroundGradient}
-            start={{x: 0, y: 0}} end={{x: 1, y: 1}}
-            style={styles.card}>
-            {header}
-            <View style={styles.content_container}>
-              {content}
-            </View>
-          </LinearGradient>
+      <View ref={(c: Object) => {this._container_ref = c}}
+        pointerEvents={(viewType === 'detail') ? 'box-none' : 'box-only'}
+        style={[styles.container, container]}>
+        <View
+          style={styles.card}>
+          {header}
+          <View style={styles.content_container}>
+            {content}
+          </View>
         </View>
-      </TouchableWithoutFeedback>
+      </View>
     );
   }
 }
@@ -178,10 +125,12 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 5,
     overflow: 'hidden',
+    flex: 1,
   },
   card: {
     flex: 1,
-    padding: 10
+    padding: 10,
+    backgroundColor: '#1A345F',
   },
   content_container: {
     flex: 1,

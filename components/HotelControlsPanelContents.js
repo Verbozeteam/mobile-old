@@ -118,6 +118,7 @@ class HotelControlsPanelContents extends React.Component<PropsType, StateType> {
                     <TouchableWithoutFeedback
                     onPress={card_defs[i].toggler}>
                         <Image style={viewType === 'detail' ? styles.card : styles.card_sm}
+                            fadeDuration={0}
                             resizeMode='contain'
                             source={(card_defs[i].state) ? card_defs[i].on_image : card_defs[i].off_image}>
                         </Image>
@@ -172,8 +173,7 @@ const styles = StyleSheet.create({
         width: 174,
     },
     card_sm: {
-        height: 87,
-        width: 43,
+        height: 150,
     },
 });
 

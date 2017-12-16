@@ -13,7 +13,7 @@ export function setConnectionState(connection_state: number) {
 };
 
 /* sets config */
-export function setConfig(config: object) {
+export function setConfig(config: Object) {
   return {
     type: SET_CONFIG,
     config

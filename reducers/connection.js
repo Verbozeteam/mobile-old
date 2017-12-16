@@ -7,7 +7,7 @@ import { SET_CONNECTION_STATE,
 
 type StateType = {
   connection_state: 0 | 1 | 2,
-  token: string,
+  ws_url: string,
   config: Object
 }
 

@@ -5,15 +5,15 @@ import { View, Text, ScrollView, Dimensions, StyleSheet } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
+import { LayoutType } from '../config/flowtypes';
+
 import LinearGradient from 'react-native-linear-gradient';
 
 const RoomPanel = require('./RoomPanel');
-const RoomPanelOverlay = require('./RoomPanelOverlay');
 
 function mapStateToProps(state: Object) {
   return {
     config: state.connection.config,
-    overlay: state.panels.overlaying_room_name
   };
 }
 
@@ -21,11 +21,13 @@ type PropsType = {
   backgroundGradient: [string, string],
   margin: number,
   bleed: number,
+  config: Object,
 };
 
 type StateType = {
   selected_room: number,
-  animated_dots: string
+  animated_dots: string,
+  isFullscreenMode: boolean, // kinda full-screen, you know
 };
 
 class RoomsView extends React.Component<PropsType, StateType> {
@@ -38,21 +40,21 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
   state = {
     selected_room: 0,
-    animated_dots: ''
+    animated_dots: '',
+    isFullscreenMode: false,
   };
 
   _scroll_view_ref: Object;
   _screen_width: number;
+  _totalHeight: number; // height of this control
   _room_layout: LayoutType;
+  _room_layout_fullscreen: LayoutType;
   _first_room_margin: LayoutType;
   _last_room_margin: LayoutType;
 
   _scroll_start_x: number = 0;
 
-  _overlay_position: Object;
-  _overlay_container: Object;
-
-  _interval: number = null;
+  _interval: any = null;
 
   componentWillMount() {
     this.calculateRoomLayout();
@@ -87,32 +89,13 @@ class RoomsView extends React.Component<PropsType, StateType> {
     var lower_index = Math.floor(approx_index);
     var higher_index = Math.ceil(approx_index);
 
-    index = 0;
-    if (x_offset - this._scroll_start_x > 0) {
+    var index = 0;
+    if (x_offset - this._scroll_start_x > 0)
       index = higher_index;
-    }
-
-    else if (x_offset - this._scroll_start_x < 0) {
+    else if (x_offset - this._scroll_start_x < 0)
       index = lower_index;
-    }
 
-    // console.log(selected_room, approx_index, lower_index, higher_index);
-    //
-    // var index = 0;
-    // if (x_offset - this._scroll_start_x > 0
-    //     && approx_index + 1 - higher_index > 0.15) {
-    //   console.log('higher');
-    //   index = higher_index;
-    // }
-    //
-    // else if (x_offset - this._scroll_start_x < 0
-    //     && lower_index - approx_index > 0.15) {
-    //   console.log('lower');
-    //   index = lower_index;
-    // }
-    //
     if (index !== selected_room) {
-      // console.log('index should change');
       if (index < 0) {
         index = 0;
       }
@@ -155,6 +138,11 @@ class RoomsView extends React.Component<PropsType, StateType> {
       marginRight: margin / 2,
       marginLeft: margin / 2
     };
+    this._room_layout_fullscreen = {
+      width: this._screen_width - margin * 2,
+      marginRight: margin,
+      marginLeft: margin,
+    };
 
     this._first_room_layout = {
       marginLeft: bleed + margin
@@ -165,46 +153,41 @@ class RoomsView extends React.Component<PropsType, StateType> {
     };
   }
 
-  measureOverlayContainer() {
-    this._overlay_container.measure((x, y, width, height, pageX, pageY) => {
-      this._overlay_position = {
-        x: pageX,
-        y: pageY
-      }
-    });
+  onContainerLayoutChanged(event: Object) {
+    this._totalHeight = event.nativeEvent.layout.height;
+  }
+
+  toggleFullscreen() {
+    this.setState({isFullscreenMode: !this.state.isFullscreenMode});
   }
 
   render() {
-    const { config, backgroundGradient, margin, bleed, overlay } = this.props;
-    const { selected_room, animated_dots } = this.state;
+    const { config, backgroundGradient, margin, bleed } = this.props;
+    const { selected_room, animated_dots, isFullscreenMode } = this.state;
 
     var content = null;
 
     /* create rooms */
     if (config && config.rooms) {
-      var length = config.rooms.length;
-      if (length < 5) {
-        for (var i = 0; i < length; i++) {
-          config.rooms.push(config.rooms[i]);
-        }
-      }
-
       var rooms = [];
       for (var i = 0; i < config.rooms.length; i++) {
-
         var rooms_margin = {};
-        if (i === 0) {
-          rooms_margin = this._first_room_layout;
-        }
-
-        else if (i === config.rooms.length - 1) {
-          rooms_margin = this._last_room_layout;
+        var rooms_layout = this._room_layout_fullscreen;
+        if (!isFullscreenMode) {
+          rooms_layout = this._room_layout;
+          if (i === 0)
+            rooms_margin = this._first_room_layout;
+          else if (i === config.rooms.length - 1)
+            rooms_margin = this._last_room_layout;
         }
 
         rooms.push(
           <View key={'room-' + i}
-            style={[styles.room, this._room_layout, rooms_margin]}>
-            <RoomPanel roomConfig={config.rooms[i]}
+            style={[styles.room, rooms_layout, rooms_margin]}>
+            <RoomPanel
+              totalHeight={this._totalHeight}
+              fullscreenToggle={this.toggleFullscreen.bind(this)}
+              roomConfig={config.rooms[i]}
               showRoomName={config.rooms.length !== 1}
               active={selected_room === i} />
           </View>
@@ -213,21 +196,19 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
       content = (
         <ScrollView ref={c => this._scroll_view_ref = c}
+          scrollEnabled={!isFullscreenMode}
           horizontal={true}
           decelerationRate={'normal'}
           scrollEventThrottle={100}
           // onScroll={this._onScroll.bind(this)}
           showsHorizontalScrollIndicator={false}
-          style={(overlay) ? {opacity: 0.1} : null}
           onScrollBeginDrag={this._onScrollBeginDrag.bind(this)}
           onScrollEndDrag={this._onScrollEndDrag.bind(this)}>
           {rooms}
         </ScrollView>
       );
-    }
-
-    /* create room loading text */
-    else {
+    } else {
+      /* create room loading text */
       content = (
         <View style={styles.text_container}>
           <Text style={styles.center_text}>
@@ -242,15 +223,10 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
     return (
       <LinearGradient colors={backgroundGradient}
+        onLayout={this.onContainerLayoutChanged.bind(this)}
         start={{x: 0.5, y: 0}} end={{x: 0.5, y: 1}}
         style={styles.container}>
         {content}
-        <View ref={c => this._overlay_container = c}
-          onLayout={this.measureOverlayContainer.bind(this)}
-          pointerEvents={(overlay) ? 'auto' : 'none'}
-          style={styles.overlay}>
-          {(overlay) ? <RoomPanelOverlay position={this._overlay_position}/> : null}
-        </View>
       </LinearGradient>
     );
   }
@@ -265,7 +241,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'center'
+    justifyContent: 'center',
   },
   overlay: {
     position: 'absolute',
