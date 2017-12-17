@@ -20,7 +20,6 @@ class ConnectionInstructions extends React.Component<PropsType, StateType> {
     ["1: Open the settings menu on the room's touchscreen"],
     ["2: Press on ", <Image key={'qr_icon'} style={styles.inline_icon} source={this._img_qr}></Image>],
     ["3: Scan the QR code you see on the touchscreen"],
-    [<Image key={'qr_scanning'} source={this._img_scanning}></Image>]
   ];
 
   render() {
