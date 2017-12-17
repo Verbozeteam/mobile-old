@@ -64,7 +64,6 @@ class VerbozeMobile extends React.Component<any, any> {
 
     if (ws_url !== nextProps.ws_url) {
       this.disconnect();
-      this.connect();
     }
   }
 

@@ -54,6 +54,7 @@ class RoomsView extends React.Component<PropsType, StateType> {
   _room_layout_fullscreen: LayoutType;
   _first_room_margin: LayoutType;
   _last_room_margin: LayoutType;
+  _only_room_margin: LayoutType;
 
   _scroll_start_x: number = 0;
 
@@ -134,6 +135,10 @@ class RoomsView extends React.Component<PropsType, StateType> {
     this._last_room_layout = {
       marginRight: bleed + margin
     };
+
+    this._only_room_margin = {
+
+    };
   }
 
   onContainerLayoutChanged(event: Object) {
@@ -161,7 +166,9 @@ class RoomsView extends React.Component<PropsType, StateType> {
         var rooms_layout = this._room_layout_fullscreen;
         if (fullscreenRoomIndex !== i) {
           rooms_layout = this._room_layout;
-          if (i === 0)
+          if (i === 0 && i === config.rooms.length - 1)
+            rooms_margin = this._only_room_layout;
+          else if (i === 0)
             rooms_margin = this._first_room_layout;
           else if (i === config.rooms.length - 1)
             rooms_margin = this._last_room_layout;
