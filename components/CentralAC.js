@@ -162,7 +162,8 @@ class CentralAC extends React.Component<PropsType, StateType> {
       <View style={styles.container}>
         <View style={styles.stack}>
           {slider}
-          <View style={styles.center_text_container}>
+          <View style={styles.center_text_container}
+                pointerEvents={'box-none'}>
             <Text style={styles.center_text_sub}>{center_text_sub}</Text>
             <Text style={styles.center_text_main}>{center_text_main}</Text>
           </View>

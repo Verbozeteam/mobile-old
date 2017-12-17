@@ -37,6 +37,8 @@
 			</dict>
 		</dict>
 	</dict>
+	<key>NSCameraUsageDescription</key>
+	<string>VerbozeMobile would like to access your camera</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string/>
 	<key>UIAppFonts</key>

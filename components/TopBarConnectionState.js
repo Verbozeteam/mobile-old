@@ -53,6 +53,9 @@ class TopBarConnectionState extends React.Component<PropsType, StateType> {
   }
 
   componentWillReceiveProps(nextProps: PropsType) {
+    if (nextProps.connection_state === this.props.connection_state)
+      return;
+
     clearTimeout(this._timeout);
     clearInterval(this._interval);
 

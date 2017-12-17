@@ -1,10 +1,12 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import PropTypes from 'prop-types';
 
 const connectionActions = require('../actions/connection');
+
+const CloseButton = require('./CloseButton');
 
 import QRCodeScanner from 'react-native-qrcode-scanner';
 
@@ -25,6 +27,11 @@ class QRView extends React.Component<PropsType, StateType> {
   }
 
   _onRead(event) {
+    if (event === undefined || event.data === undefined) {
+      this.context.store.dispatch(connectionActions.setQRReaderState(false));
+      return;
+    }
+
     const token = event.data;
 
     this.context.store.dispatch(connectionActions.setWebSocketUrl(token, true));
@@ -42,9 +49,10 @@ class QRView extends React.Component<PropsType, StateType> {
         <QRCodeScanner onRead={this._onRead.bind(this)}
           reactivate={true}
           showMarker={true} />
-        <Text style={styles.token}>
-          {token}
-        </Text>
+
+        <View style={[styles.close_container, {width: Dimensions.get('screen').width-10}]}>
+          <CloseButton onPress={this._onRead.bind(this)} />
+        </View>
       </View>
     );
   }
@@ -57,10 +65,16 @@ QRView.contextTypes = {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   token: {
     textAlign: 'center'
-  }
+  },
+  close_container: {
+    height: 40,
+    bottom: 5,
+  },
 });
 
 module.exports = QRView;

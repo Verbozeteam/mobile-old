@@ -38,28 +38,22 @@ class LightsPanel extends React.Component<PropsType>  {
         const { viewType, layout } = this.props;
 
         var dimmer_name = '';
-        var slider_width = layout.width - 60;
+        var slider_width = layout.width - 50;
         var slider_height = 30;
         if (viewType === 'detail') {
             slider_height = 50;
             dimmer_name = I18n.t(dimmer.name.en);
-            slider_width = layout.width - 140;
+            slider_width = layout.width - 30;
         }
 
-        return <View
-            key={dimmer.id+'-container'}
-            style={dimmer_styles.container}>
-            <View key={dimmer.id+'-name'}
-                style={dimmer_styles.name_container}>
-                <Text style={dimmer_styles.name}>
-                    {dimmer_name}
-                </Text>
+        return (
+            <View key={'dimmer-row-'+dimmer.name.en} style={styles.row}>
+                <LightDimmer
+                    key={dimmer.id}
+                    id={dimmer.id}
+                    layout={{width: slider_width, height: slider_height, top: 0, left: 0}}/>
             </View>
-            <LightDimmer
-                key={dimmer.id}
-                id={dimmer.id}
-                layout={{width: slider_width, height: slider_height, top: 0, left: 0}}/>
-        </View>;
+        );
     }
 
     renderLightSwitch(light_switch: GenericThingType) {
@@ -67,81 +61,90 @@ class LightsPanel extends React.Component<PropsType>  {
 
         var switch_name = '';
         var switch_view = null;
-        if (viewType === 'detail') {
-            switch_view = (
-                <View  style={{flex: 2, alignItems: 'center', justifyContent: 'center',}}>
-                    <GenericToggle
-                        selected={this.context.store.getState().things.things_states[light_switch.id].intensity}
-                        values={['Off', 'On']}
-                        actions={[() => this.changeIntensity(light_switch.id, 0), () => this.changeIntensity(light_switch.id, 1)]}
-                        layout={{width: 150, height: 50}}/>
-                </View>
-            );
-
+        if (viewType === 'detail')
             switch_name = I18n.t(light_switch.name.en);
-        }
 
-        return <View key={light_switch.id+'-container'}
-            style={switch_styles.container}>
-            <View key={light_switch.id+'-container-container'}
-                style={switch_styles.container_container}>
-                <LightSwitch
-                    key={light_switch.id}
-                    id={light_switch.id}
-                    viewType={viewType} />
-                <Text key={light_switch.id+'-name'}
-                    style={[switch_styles.name, viewType === 'detail' ? {height: 30} : {}]}>
-                    {switch_name}
-                </Text>
+        return (
+            <View key={'lightswitch-'+light_switch.name.en} style={styles.column}>
+                <View key={light_switch.id+'-container-container'}
+                    style={styles.switch_container}>
+                    <LightSwitch
+                        key={light_switch.id}
+                        id={light_switch.id}
+                        viewType={viewType} />
+                    <Text key={light_switch.id+'-name'}
+                        style={styles.switch_name}>
+                        {switch_name}
+                    </Text>
+                </View>
             </View>
-            {switch_view}
-        </View>;
+        );
     }
 
     renderPresetsSwitch(presets: Array<Object>) {
         const { viewType, layout } = this.props;
         var key = 'presets-'+Object.keys(presets[0]).sort()[0];
 
-        return <View key={key}
-            style={switch_styles.container}>
-            <View key={key+'-container-container'}
-                style={switch_styles.container}>
-                <Text key={key+'-name'}
-                    style={[switch_styles.name, viewType === 'detail' ? {height: 30} : {}]}>
-                    {I18n.t("Presets")}
-                </Text>
-                <PresetsSwitch
-                    key={key+'-switch'}
-                    presets={presets}
-                    viewType={viewType} />
+        return (
+            <View  key={key} style={[styles.row, styles.separatorTop]}>
+                <View style={styles.column}>
+                    <Text style={styles.presets_text}>{I18n.t('Presets')}</Text>
+                    <PresetsSwitch
+                        key={key+'-switch'}
+                        presets={presets}
+                        viewType={viewType}
+                        layout={{width: presets.length * 75, height: 50}} />
+                </View>
             </View>
-        </View>;
+        );
     }
 
     render() {
         const { things, layout, presets, viewType } = this.props;
 
-        var preset;
-        var dimmers = [];
-        var switches = [];
+        var dimmer_rows = [];
+        var switch_rows = [];
+        var preset_rows = [];
+        var switch_columns = [];
 
-        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0 )
-            preset = this.renderPresetsSwitch(presets);
+        if (viewType ==='detail' && presets && typeof(presets) == "object" && presets.length > 0)
+            preset_rows.push(this.renderPresetsSwitch(presets));
 
         for (var i = 0; i < things.length; i++) {
             if (things[i].category === 'dimmers')
-                dimmers.push(this.renderDimmer(things[i]));
+                dimmer_rows.push(this.renderDimmer(things[i]));
             else
-               switches.push(this.renderLightSwitch(things[i]));
+               switch_columns.push(this.renderLightSwitch(things[i]));
+        }
+
+        for (var i = 0; i < switch_columns.length; i += 2) {
+            var switches = [switch_columns[i]];
+            if (i < switch_columns.length - 1)
+                switches.push(switch_columns[i+1]);
+            else
+                switches.push(<View key={'switch-placeholder-'+i} style={styles.column} />);
+
+            switch_rows.push(<View key={'switch-row-'+i} style={styles.row2}>{switches}</View>);
+        }
+
+        var switch_rows_container_style = {
+            flex: 2,
+            flexDirection: 'row',
+        };
+        if (viewType === 'detail') {
+            switch_rows_container_style = {
+                flex: switch_rows.length * 2,
+                flexDirection: 'column',
+            };
         }
 
         return (
             <View style={styles.container}>
-                {preset}
-                {dimmers}
-                <View style={viewType === 'detail' ? [styles.switches_tall_container, {height: switches.length*100}] : styles.switches_container}>
-                    {switches}
+                {dimmer_rows}
+                <View style={[switch_rows_container_style, viewType === 'detail' ? styles.separatorTop : {}]}>
+                    {switch_rows}
                 </View>
+                {preset_rows}
             </View>
         );
     }
@@ -155,56 +158,49 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
     },
-    switches_container: {
+    row: {
+        flex: 2,
         flexDirection: 'row',
-        flex: 1,
-        height: 100,
-    },
-    switches_tall_container: {
-        flexDirection: 'column',
-        width: '100%',
-    }
-});
-
-const dimmer_styles = StyleSheet.create({
-    container: {
         alignItems: 'center',
         justifyContent: 'center',
-        flexDirection: 'row',
     },
-    name_container: {
-        marginLeft: 0,
+    row2: {
+        flex: 3,
+        flexDirection: 'row',
+        alignItems: 'center',
         justifyContent: 'center',
-        flex: 1,
     },
-    name: {
-        marginRight: 20,
-        fontSize: 18,
-        fontFamily: 'HKNova-MediumR',
-        color: '#ffffff',
-        backgroundColor: '#00000000',
+    separatorTop: {
+        borderTopWidth: 0,
+        borderTopColor: '#1D2429',
     },
-});
-
-const switch_styles = StyleSheet.create({
-    container: {
-        flexDirection: 'row',
+    column: {
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
     },
-    container_container: {
-        flexDirection: 'column',
-        flex: 1,
-    },
-    name: {
-        marginTop: -20,
+    switch_name: {
+        position: 'absolute',
+        bottom: 5,
         fontSize: 18,
         fontFamily: 'HKNova-MediumR',
         color: '#ffffff',
         textAlign: 'center',
         backgroundColor: '#00000000',
-    }
+    },
+    switch_container: {
+        flex: 1,
+        height: '100%',
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    presets_text: {
+        fontSize: 18,
+        fontFamily: 'HKNova-MediumR',
+        color: '#ffffff',
+        backgroundColor: '#00000000',
+    },
 });
 
 module.exports = LightsPanel;

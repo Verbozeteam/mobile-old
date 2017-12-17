@@ -86,12 +86,12 @@ class Room extends React.Component<PropsType, StateType> {
           height: 200,
         };
         if (panelIndex === selectedCard)
-          panelLayoutStyle.height = totalHeight - 60;
+          panelLayoutStyle.height = totalHeight - 70;
 
         panels.push(
           <TouchableWithoutFeedback
             key={'panel-' + panel.name.en + '-' + roomConfig.name.en}
-            onPress={selectedCard === -1 ? (() => this.onPanelSelected(panelIndex)).bind(this) : null}>
+            onPress={(selectedCard === -1 && active) ? (() => this.onPanelSelected(panelIndex)).bind(this) : null}>
             <View style={[panelLayoutStyle, styles.room_panel]}>
               <RoomPanelCard
                 viewType={panelIndex === selectedCard ? 'detail' : 'collapsed'}
@@ -156,6 +156,8 @@ const styles = StyleSheet.create({
   close_button: {
     width: '100%',
     height: 40,
+    marginTop: 5,
+    marginBottom: 5,
   }
 });
 

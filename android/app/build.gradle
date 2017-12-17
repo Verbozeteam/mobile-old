@@ -94,8 +94,8 @@ def enableSeparateBuildPerCPUArchitecture = false
 def enableProguardInReleaseBuilds = false
 
 android {
-    compileSdkVersion 25
-    buildToolsVersion "25.0.2"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "com.verbozemobile"
@@ -105,16 +105,6 @@ android {
         versionName "1.0"
         ndk {
             abiFilters "armeabi-v7a", "x86"
-        }
-    }
-    signingConfigs {
-        release {
-            if (project.hasProperty('VERBOZE_MOBILE_RELEASE_STORE_FILE')) {
-                storeFile file(VERBOZE_MOBILE_RELEASE_STORE_FILE)
-                storePassword VERBOZE_MOBILE_STORE_PASSWORD
-                keyAlias VERBOZE_MOBILE_KEY_ALIAS
-                keyPassword VERBOZE_MOBILE_RELEASE_KEY_PASSWORD
-            }
         }
     }
     splits {
@@ -129,7 +119,6 @@ android {
         release {
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
-            signingConfig signingConfigs.release
         }
     }
     // applicationVariants are e.g. debug, release
@@ -148,9 +137,9 @@ android {
 }
 
 dependencies {
-    compile project(':react-native-camera')
     compile project(':react-native-svg')
     compile project(':react-native-linear-gradient')
+    compile project(':react-native-camera')
     compile fileTree(dir: "libs", include: ["*.jar"])
     compile "com.android.support:appcompat-v7:23.0.1"
     compile "com.facebook.react:react-native:+"  // From node_modules

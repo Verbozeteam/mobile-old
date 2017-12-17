@@ -21,6 +21,7 @@ type StateType = {
 type PropsType = {
     viewType: ViewType,
     presets: Array<Object>,
+    layout: Object,
 };
 
 class PresetsSwitch extends React.Component<PropsType, StateType> {
@@ -90,7 +91,7 @@ class PresetsSwitch extends React.Component<PropsType, StateType> {
     }
 
     render() {
-        const { presets, viewType } = this.props;
+        const { presets, viewType, layout } = this.props;
         const { currentPresetIndex } = this.state;
 
         var on_press = (() => this.changePreset((this.state.currentPresetIndex + 1) % presets.length)).bind(this);
@@ -100,10 +101,7 @@ class PresetsSwitch extends React.Component<PropsType, StateType> {
         return (
             <GenericToggle values={values}
                 orientation={"horizontal"}
-                layout={{
-                    height: 50,
-                    width: 200,
-                }}
+                layout={layout}
                 sameSameValue={true}
                 actions={actions}
                 selected={currentPresetIndex} />

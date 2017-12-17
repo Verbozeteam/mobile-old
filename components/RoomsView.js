@@ -31,7 +31,7 @@ type PropsType = {
 
 type StateType = {
   selected_room: number,
-  isFullscreenMode: boolean, // kinda full-screen, you know
+  fullscreenRoomIndex: number, // index of the room that is in "full-screen"
 };
 
 class RoomsView extends React.Component<PropsType, StateType> {
@@ -44,7 +44,7 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
   state = {
     selected_room: 0,
-    isFullscreenMode: false,
+    fullscreenRoomIndex: -1,
   };
 
   _scroll_view_ref: Object;
@@ -91,9 +91,7 @@ class RoomsView extends React.Component<PropsType, StateType> {
     if (index !== selected_room) {
       if (index < 0) {
         index = 0;
-      }
-
-      else if (index >= config.rooms.length) {
+      } else if (index >= config.rooms.length) {
         index = config.rooms.length - 1;
       }
 
@@ -142,36 +140,40 @@ class RoomsView extends React.Component<PropsType, StateType> {
     this._totalHeight = event.nativeEvent.layout.height;
   }
 
-  toggleFullscreen() {
-    this.setState({isFullscreenMode: !this.state.isFullscreenMode});
+  toggleFullscreen(roomIndex: number) : () => any {
+    return (() => {
+      this.setState({fullscreenRoomIndex: roomIndex === this.state.fullscreenRoomIndex ? -1 : roomIndex});
+    }).bind(this);
   }
 
   render() {
     const { config, backgroundGradient, margin, bleed, qr_reader_on } = this.props;
-    const { selected_room, isFullscreenMode } = this.state;
+    const { selected_room, fullscreenRoomIndex } = this.state;
 
     var content = null;
 
     /* create rooms */
     if (config && config.rooms && !qr_reader_on) {
       var rooms = [];
+      var scrollview_shift = {};
       for (var i = 0; i < config.rooms.length; i++) {
         var rooms_margin = {};
         var rooms_layout = this._room_layout_fullscreen;
-        if (!isFullscreenMode) {
+        if (fullscreenRoomIndex !== i) {
           rooms_layout = this._room_layout;
           if (i === 0)
             rooms_margin = this._first_room_layout;
           else if (i === config.rooms.length - 1)
             rooms_margin = this._last_room_layout;
-        }
+        } else if (i !== 0 && i !== config.rooms.length - 1)
+          scrollview_shift = {marginLeft: -margin / 2 - bleed}
 
         rooms.push(
           <View key={'room-' + i}
             style={[styles.room, rooms_layout, rooms_margin]}>
             <RoomPanel
               totalHeight={this._totalHeight}
-              fullscreenToggle={this.toggleFullscreen.bind(this)}
+              fullscreenToggle={this.toggleFullscreen(i)}
               roomConfig={config.rooms[i]}
               showRoomName={config.rooms.length !== 1}
               active={selected_room === i} />
@@ -181,14 +183,15 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
       content = (
         <ScrollView ref={c => this._scroll_view_ref = c}
-          scrollEnabled={!isFullscreenMode}
+          scrollEnabled={fullscreenRoomIndex === -1}
           horizontal={true}
           decelerationRate={'normal'}
           scrollEventThrottle={100}
           // onScroll={this._onScroll.bind(this)}
           showsHorizontalScrollIndicator={false}
           onScrollBeginDrag={this._onScrollBeginDrag.bind(this)}
-          onScrollEndDrag={this._onScrollEndDrag.bind(this)}>
+          onScrollEndDrag={this._onScrollEndDrag.bind(this)}
+          style={scrollview_shift}>
           {rooms}
         </ScrollView>
       );

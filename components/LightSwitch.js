@@ -89,8 +89,8 @@ LightSwitch.contextTypes = {
 const styles = StyleSheet.create({
     light_bulb: {
         flex: 1,
-        width: undefined,
-        height: undefined,
+        width: '100%',
+        height: '100%',
     },
 });
 
