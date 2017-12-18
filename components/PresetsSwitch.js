@@ -27,6 +27,8 @@ type PropsType = {
 class PresetsSwitch extends React.Component<PropsType, StateType> {
     _unsubscribe: () => null = () => {return null;};
 
+    _cog_icon = require('../assets/images/cog_large.png');
+
     state = {
         currentPresetIndex: 0,
     };
@@ -100,6 +102,7 @@ class PresetsSwitch extends React.Component<PropsType, StateType> {
 
         return (
             <GenericToggle values={values}
+                icon={this._cog_icon}
                 orientation={"horizontal"}
                 layout={layout}
                 sameSameValue={true}

@@ -16,33 +16,36 @@ type StateType = {
 };
 
 class QRView extends React.Component<PropsType, StateType> {
-  _unsubscribe: () => null = () => null;
-
   state = {
     token: ''
   };
 
   componentWillUnmount() {
-    this._unsubscribe();
+    console.log("ba7ba7na")
   }
 
   _onRead(event) {
-    if (event === undefined || event.data === undefined) {
+    if (event === undefined || event.data === undefined  || this.state.token !== ''){
       this.context.store.dispatch(connectionActions.setQRReaderState(false));
       return;
     }
 
     const token = event.data;
 
-    this.context.store.dispatch(connectionActions.setWebSocketUrl(token, true));
+    console.log("READ ", token)
 
-    this.setState({
-      token
-    });
+    if (token !== this.state.token) {
+      this.setState({
+        token
+      });
+      this.context.store.dispatch(connectionActions.setWebSocketUrl(token, true));
+    }
   }
 
   render() {
     const { token } = this.state;
+
+    console.log("RENDERING with ", token)
 
     return (
       <View style={styles.container}>

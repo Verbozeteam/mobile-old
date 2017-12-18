@@ -51,6 +51,8 @@ class LightsPanel extends React.Component<PropsType>  {
                 <LightDimmer
                     key={dimmer.id}
                     id={dimmer.id}
+                    name={I18n.t(dimmer.name.en)}
+                    viewType={viewType}
                     layout={{width: slider_width, height: slider_height, top: 0, left: 0}}/>
             </View>
         );
@@ -88,7 +90,6 @@ class LightsPanel extends React.Component<PropsType>  {
         return (
             <View  key={key} style={[styles.row, styles.separatorTop]}>
                 <View style={styles.column}>
-                    <Text style={styles.presets_text}>{I18n.t('Presets')}</Text>
                     <PresetsSwitch
                         key={key+'-switch'}
                         presets={presets}

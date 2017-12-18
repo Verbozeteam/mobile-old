@@ -8,7 +8,7 @@ const GenericSlider = require('../react-components/GenericSlider');
 const thingsActions = require('../actions/things');
 const SocketCommunication = require('../lib/WebSocketCommunication');
 
-import type { LayoutType } from '../config/flowtypes';
+import type { LayoutType, ViewType } from '../config/flowtypes';
 
 type StateType = {
     intensity: number,
@@ -16,7 +16,9 @@ type StateType = {
 
 type PropsType = {
     id: string,
+    name: string,
     layout: LayoutType,
+    viewType: ViewType,
 };
 
 class LightDimmer extends React.Component<PropsType, StateType> {
@@ -61,7 +63,7 @@ class LightDimmer extends React.Component<PropsType, StateType> {
     }
 
     render() {
-        const { layout } = this.props;
+        const { layout, name, viewType } = this.props;
         const { intensity } = this.state;
 
         return (
@@ -73,6 +75,8 @@ class LightDimmer extends React.Component<PropsType, StateType> {
                 maximum={100}
                 minimum={0}
                 round={(value: number) => Math.round(value)}
+                textGenerator={(v) => name}
+                showValue={viewType === 'detail'}
                 onMove={this.changeIntensity.bind(this)}
                 onRelease={this.changeIntensity.bind(this)} />
         );
