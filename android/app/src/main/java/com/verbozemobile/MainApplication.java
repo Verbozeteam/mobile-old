@@ -6,8 +6,6 @@ import com.facebook.react.ReactApplication;
 import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
-import com.lwansbrough.RCTCamera.RCTCameraPackage;
-import com.horcrux.svg.SvgPackage;
 import com.BV.LinearGradient.LinearGradientPackage;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
@@ -32,8 +30,6 @@ public class MainApplication extends Application implements ReactApplication {
             new SvgPackage(),
             new LinearGradientPackage(),
             new RCTCameraPackage(),
-            new RCTCameraPackage(),
-            new SvgPackage(),
             new LinearGradientPackage()
       );
     }

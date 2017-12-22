@@ -105,13 +105,14 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
       <View ref={(c: Object) => {this._container_ref = c}}
         pointerEvents={(viewType === 'detail') ? 'box-none' : 'box-only'}
         style={[styles.container, container]}>
-        <View
-          style={styles.card}>
-          {header}
-          <View style={styles.content_container}>
-            {content}
-          </View>
-        </View>
+          <LinearGradient colors={['#1c2f4f', '#0f1f3f']}
+            start={{x: 1, y: 0}} end={{x: 0, y: 1}}
+            style={styles.card}>
+            {header}
+            <View style={styles.content_container}>
+              {content}
+            </View>
+          </LinearGradient>
       </View>
     );
   }
@@ -123,14 +124,13 @@ RoomPanelCard.contextTypes = {
 
 const styles = StyleSheet.create({
   container: {
-    borderRadius: 5,
+    borderRadius: 2,
     overflow: 'hidden',
     flex: 1,
   },
   card: {
     flex: 1,
     padding: 10,
-    backgroundColor: '#2C3338',
   },
   content_container: {
     flex: 1,

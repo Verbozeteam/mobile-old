@@ -38,8 +38,8 @@ class RoomsView extends React.Component<PropsType, StateType> {
 
   static defaultProps = {
     backgroundGradient: ['#101821', '#131D28'],
-    margin: 10,
-    bleed: 10,
+    margin: 5,
+    bleed: 5,
   };
 
   state = {

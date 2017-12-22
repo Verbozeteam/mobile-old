@@ -75,7 +75,8 @@ class LightsPanel extends React.Component<PropsType>  {
                         id={light_switch.id}
                         viewType={viewType} />
                     <Text key={light_switch.id+'-name'}
-                        style={styles.switch_name}>
+                        style={styles.switch_name}
+                        pointerEvents='none'>
                         {switch_name}
                     </Text>
                 </View>
@@ -94,7 +95,7 @@ class LightsPanel extends React.Component<PropsType>  {
                         key={key+'-switch'}
                         presets={presets}
                         viewType={viewType}
-                        layout={{width: presets.length * 75, height: 50}} />
+                        layout={{width: layout.width - 80, height: 50}} />
                 </View>
             </View>
         );
@@ -141,11 +142,11 @@ class LightsPanel extends React.Component<PropsType>  {
 
         return (
             <View style={styles.container}>
+                {preset_rows}
                 {dimmer_rows}
                 <View style={[switch_rows_container_style, viewType === 'detail' ? styles.separatorTop : {}]}>
                     {switch_rows}
                 </View>
-                {preset_rows}
             </View>
         );
     }

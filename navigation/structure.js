@@ -32,7 +32,7 @@ export const options = {
   lazy: true,
   tabBarOptions: {
     style: {
-      backgroundColor: '#1D2429'
+      backgroundColor: '#0f1f3f'
     },
     activeTintColor: '#68B6E6',
     inactiveTintColor: '#FFFFFF',

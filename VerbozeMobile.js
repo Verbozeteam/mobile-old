@@ -109,6 +109,7 @@ class VerbozeMobile extends React.Component<any, any> {
     /* set config if provided */
     if ('config' in data) {
       console.log("got config: ", data.config);
+      data.config.rooms = [data.config.rooms[0]];
       setConfig(data.config);
       delete data['config'];
     }

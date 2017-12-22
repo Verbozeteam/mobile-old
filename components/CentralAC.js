@@ -121,6 +121,9 @@ class CentralAC extends React.Component<PropsType, StateType> {
     var room_temp_text = ' ';
     var hiding_style = {};
 
+    var center_text_main_fontsize = {};
+    var center_text_sub_fontsize = {};
+
     if (viewType === 'detail') {
       if (fan) {
         center_text_main = set_pt.toFixed(1) + '°C';
@@ -138,17 +141,22 @@ class CentralAC extends React.Component<PropsType, StateType> {
           round={this.round.bind(this)}
           onMove={this.changeTemperature(false).bind(this)}
           onRelease={this.changeTemperature(true).bind(this)}
-          diameter={layout.width / 1.3}
+          diameter={layout.height < 400 ? layout.width / 1.45 : layout.width / 1.3}
           disabled={fan === 0} />
       );
 
       toggles = (
         <GenericToggle values={this._fan_speeds}
           icon={this._fan_icon}
-          layout={{height: 60, width: layout.width - 100}}
+          layout={{height: layout.height < 400 ? 40 : 60, width: layout.width - 100}}
           actions={this._fan_actions}
           selected={fan} />
       );
+
+      if (layout.height < 400) {
+        center_text_main_fontsize = {fontSize: 35};
+        center_text_sub_fontsize = {fontSize: 14};
+      }
     } else {
       hiding_style = {
         display: 'none'
@@ -164,8 +172,8 @@ class CentralAC extends React.Component<PropsType, StateType> {
           {slider}
           <View style={styles.center_text_container}
                 pointerEvents={'box-none'}>
-            <Text style={styles.center_text_sub}>{center_text_sub}</Text>
-            <Text style={styles.center_text_main}>{center_text_main}</Text>
+            <Text style={[styles.center_text_sub, center_text_sub_fontsize]}>{center_text_sub}</Text>
+            <Text style={[styles.center_text_main, center_text_main_fontsize]}>{center_text_main}</Text>
           </View>
         </View>
 

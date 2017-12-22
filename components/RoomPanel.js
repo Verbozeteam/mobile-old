@@ -52,7 +52,7 @@ class Room extends React.Component<PropsType, StateType> {
     this.setState({selectedCard: panelIndex});
     if (panelIndex !== -1) {
       requestAnimationFrame((() => {
-        this.refs.scrollView.scrollTo({x: 0, y: 210*panelIndex, animated: true});
+        this.refs.scrollView.scrollTo({x: 0, y: 204*panelIndex, animated: true});
       }).bind(this));
     } else {
       this.refs.scrollView.scrollTo({x: 0, y: this._last_scroll_y, animated: true});
@@ -86,7 +86,7 @@ class Room extends React.Component<PropsType, StateType> {
           height: 200,
         };
         if (panelIndex === selectedCard)
-          panelLayoutStyle.height = totalHeight - 70;
+          panelLayoutStyle.height = totalHeight - 50;
 
         panels.push(
           <TouchableWithoutFeedback
@@ -133,17 +133,17 @@ const styles = StyleSheet.create({
     flex: 1
   },
   room_panel: {
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 2,
+    marginBottom: 2,
   },
   scroll_view: {
-    paddingTop: 5,
+    paddingTop: 2,
   },
   header: {
-    paddingTop: 10,
-    paddingRight: 10,
-    paddingLeft: 10,
-    paddingBottom: 5,
+    paddingTop: 4,
+    paddingRight: 4,
+    paddingLeft: 4,
+    paddingBottom: 2,
     borderColor: '#FFFFFF',
     borderBottomWidth: 1,
   },
@@ -156,8 +156,8 @@ const styles = StyleSheet.create({
   close_button: {
     width: '100%',
     height: 40,
-    marginTop: 5,
-    marginBottom: 5,
+    marginTop: 2,
+    marginBottom: 2,
   }
 });
 

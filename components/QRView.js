@@ -21,7 +21,6 @@ class QRView extends React.Component<PropsType, StateType> {
   };
 
   componentWillUnmount() {
-    console.log("ba7ba7na")
   }
 
   _onRead(event) {
@@ -31,8 +30,6 @@ class QRView extends React.Component<PropsType, StateType> {
     }
 
     const token = event.data;
-
-    console.log("READ ", token)
 
     if (token !== this.state.token) {
       this.setState({
@@ -45,12 +42,9 @@ class QRView extends React.Component<PropsType, StateType> {
   render() {
     const { token } = this.state;
 
-    console.log("RENDERING with ", token)
-
     return (
       <View style={styles.container}>
         <QRCodeScanner onRead={this._onRead.bind(this)}
-          reactivate={true}
           showMarker={true} />
 
         <View style={[styles.close_container, {width: Dimensions.get('screen').width-10}]}>
