@@ -29,8 +29,14 @@ function mapStateToProps(state: Object) {
 
 function mapDispatchToProps(dispatch: Function) {
   return {
-    addOutgoingChatMessage: (message: string) =>
-      dispatch(RoomServiceActions.addOutgoingChatMessage(message)),
+    addOutgoingChatMessage: (message: string) => {
+      dispatch(RoomServiceActions.addOutgoingChatMessage(message));
+    },
+
+    // TODO: remove the following as it's not needed
+    addIncomingChatMessage: (message: string) => {
+      dispatch(RoomServiceActions.addIncomingChatMessage(message))
+    }
   };
 }
 
@@ -40,9 +46,20 @@ class ChatView extends React.Component<PropsType, StateType> {
     text: ''
   };
 
+  _scroll_view = null;
+
   sendMessage() {
-    const { addOutgoingChatMessage } = this.props;
-    const { text } = this.state;
+    const { addOutgoingChatMessage, addIncomingChatMessage } = this.props;
+    var { text } = this.state;
+
+    text = text.trim();
+    if (text.length == 0) {
+      this.setState({
+        text: ''
+      });
+
+      return;
+    }
 
     const message = {
       message: text,
@@ -50,6 +67,16 @@ class ChatView extends React.Component<PropsType, StateType> {
     };
 
     addOutgoingChatMessage(message);
+
+    setTimeout(() => {
+      const message = {
+        message: text,
+        sender: 'Yusuf Musleh [Conceirge]',
+        outgoing: false
+      };
+
+      addIncomingChatMessage(message);
+    }, 5000);
 
     /* set text to empty */
     this.setState({
@@ -64,6 +91,10 @@ class ChatView extends React.Component<PropsType, StateType> {
     );
   }
 
+  _scrollToChatEnd() {
+    this._scroll_view.scrollToEnd({animated: true});
+  }
+
   render() {
     const { messages } = this.props;
     const { text } = this.state;
@@ -76,7 +107,9 @@ class ChatView extends React.Component<PropsType, StateType> {
     return (
         <KeyboardAvoidingView style={styles.container}
           behavior={'padding'}>
-          <ScrollView>
+          <ScrollView ref={(c) => this._scroll_view = c}
+            onLayout={this._scrollToChatEnd.bind(this)}
+            onContentSizeChange={this._scrollToChatEnd.bind(this)}>
             {chat_bubbles}
           </ScrollView>
           <View style={styles.text_input_container}>
@@ -132,19 +165,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   }
-  // text_input: {
-  //   flex: 2,
-  //   margin: 10,
-  //   borderRadius: 5,
-  //   padding: 10,
-  //   backgroundColor: '#EEEEEE',
-  // },
-  // send_button: {
-  //   flex: 1,
-  //   margin: 10,
-  //   borderRadius: 5,
-  //   backgroundColor: '#0000FF'
-  // }
 });
 
 module.exports = ChatView;
