@@ -157,10 +157,12 @@ import { Provider } from 'react-redux';
 
 const ConnectionReducer = require('./reducers/connection');
 const ThingsReducer = require('./reducers/things');
+const ChatReducer = require('./reducers/chat');
 
 const STORE = createStore(combineReducers({
   connection: ConnectionReducer,
   things: ThingsReducer,
+  chat: ChatReducer
 }));
 
 class VerbozeMobileWrapper extends React.Component<any> {
