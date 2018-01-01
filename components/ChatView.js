@@ -6,7 +6,7 @@ import { View, KeyboardAvoidingView, Text, Button,
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
-const ChatActions = require('../actions/chat');
+const RoomServiceActions = require('../actions/room_service');
 
 const ChatBubble = require('./ChatBubble');
 
@@ -23,14 +23,14 @@ type StateType = {
 
 function mapStateToProps(state: Object) {
   return {
-    messages: state.chat.messages
+    messages: state.room_service.chat_messages
   };
 }
 
 function mapDispatchToProps(dispatch: Function) {
   return {
-    addOutgoingMessage: (message: string) =>
-      dispatch(ChatActions.addOutgoingMessage(message)),
+    addOutgoingChatMessage: (message: string) =>
+      dispatch(RoomServiceActions.addOutgoingChatMessage(message)),
   };
 }
 
@@ -41,7 +41,7 @@ class ChatView extends React.Component<PropsType, StateType> {
   };
 
   sendMessage() {
-    const { addOutgoingMessage } = this.props;
+    const { addOutgoingChatMessage } = this.props;
     const { text } = this.state;
 
     const message = {
@@ -49,7 +49,7 @@ class ChatView extends React.Component<PropsType, StateType> {
       outgoing: true
     };
 
-    addOutgoingMessage(message);
+    addOutgoingChatMessage(message);
 
     /* set text to empty */
     this.setState({

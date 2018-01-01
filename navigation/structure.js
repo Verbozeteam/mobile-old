@@ -5,6 +5,8 @@ import { Image } from 'react-native';
 
 const { ViewWrapper } = require('../components/ViewWrapper');
 const RoomsView = require('../components/RoomsView');
+const RoomServiceView = require('../components/RoomServiceView');
+const ChatView = require('../components/ChatView');
 const QRView = require('../components/QRView');
 const AccountView = require('../components/AccountView');
 
@@ -15,6 +17,23 @@ export const structure = {
       tabBarIcon: <Image source={require('../assets/images/room_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>,
       tabBarLabel: 'Rooms',
       drawerLabel: 'Rooms'
+    }
+  },
+
+  RoomService: {
+    screen: ViewWrapper(RoomServiceView),
+    navigationOptions: {
+      tabBarLabel: 'Room Service',
+      drawerLabel: 'Room Service'
+    }
+  },
+
+  Chat: {
+    screen: ViewWrapper(ChatView),
+    navigationOptions: {
+      tabBarIcon: <Image source={require('../assets/images/chat_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>,
+      tabBarLabel: 'Chat',
+      drawerLabel: 'Chat'
     }
   },
 
