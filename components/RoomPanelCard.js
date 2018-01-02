@@ -13,6 +13,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const HotelControlsPanelContents = require('./HotelControlsPanelContents');
 const CentralAC = require('./CentralAC');
 const LightsPanel = require('./LightsPanel');
+const CurtainsPanel = require('./CurtainsPanel');
 
 type PropsType = {
   panel: ConnectionTypes.PanelType,
@@ -70,6 +71,14 @@ class RoomPanelCard extends React.Component<PropsType, StateType> {
               viewType={viewType}
               layout={{width: Dimensions.get('screen').width-10}}
               presets={panel.presets} />
+          );
+          break;
+        case 'curtains':
+          content = (
+            <CurtainsPanel
+              things={panel.things}
+              viewType={viewType}
+              layout={{width: Dimensions.get('screen').width-10}} />
           );
           break;
         case 'hotel_controls':

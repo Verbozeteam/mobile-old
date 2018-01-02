@@ -22,7 +22,7 @@ type PropsType = {
 };
 
 class LightSwitch extends React.Component<PropsType, StateType> {
-    _unsubscribe: () => null = () => {return null;};
+    _unsubscribe: () => null = () => null;
 
     state = {
         intensity: 0,

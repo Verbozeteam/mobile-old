@@ -17,7 +17,7 @@ type StateType = {
 const defaultState: StateType = {
   /* 0 - not connected, 1 - connecting, 2 - connected */
   connection_state: 0,
-  ws_url: 'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98',
+  ws_url: "ws://10.11.28.41:8000/stream/3a4750bc-61b6-4476-9c86-5e07701742fb/", //'wss://www.verboze.com/stream/35b4d595ef074543a2fa686650024d98',
   qr_reader_on: false,
   config: {}
 };
