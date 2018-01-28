@@ -47,6 +47,15 @@ module.exports = (state: Object = defaultState, action: Object): Object => {
       };
 
       new_state.requests.push(request);
+      break;
+
+    case SET_REQUESTED_SERVICE_CANCELLED:
+      const new_requests = new_state.requests.filter((element) => {
+        return element.id != action.request_id;
+      });
+
+      new_state.requests = new_requests;
+      break;
   }
 
   return new_state;

@@ -49,14 +49,11 @@ class ServiceButton extends React.Component<PropsType, StateType> {
 
 
   render() {
-    console.log('render called');
-
     const { id, name, text, image, onPress, highlightGradient } = this.props;
     var { backgroundGradient } = this.props;
     const { pressed } = this.state;
 
     if (pressed) {
-      console.log('pressed');
       backgroundGradient = highlightGradient;
     }
 

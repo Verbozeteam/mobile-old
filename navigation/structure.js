@@ -24,8 +24,8 @@ export const structure = {
     screen: ViewWrapper(RoomServiceView),
     navigationOptions: {
       tabBarIcon: <Image source={require('../assets/images/room_service_selected.png')} style={{height: 40, width: 40}} resizeMode={'contain'}></Image>,
-      tabBarLabel: 'Room Service',
-      drawerLabel: 'Room Service'
+      tabBarLabel: 'Services',
+      drawerLabel: 'Services'
     }
   },
 

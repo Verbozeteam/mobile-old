@@ -1,13 +1,16 @@
 /* @flow */
 
 import * as React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView, StyleSheet, LayoutAnimation, Platform,
+  UIManager } from 'react-native';
 import PropTypes from 'prop-types';
 import { connect as ReduxConnect } from 'react-redux';
 
 const RoomServiceActions = require('../actions/room_service');
 
 const ServiceButton = require('./ServiceButton');
+const ServiceDialogue = require('./ServiceDialogue');
+const RequestedServiceCard = require('./RequestedServiceCard');
 
 type ServiceType = {
   id: number,
@@ -22,7 +25,9 @@ type PropsType = {
   highlightGradient?: [string, string]
 };
 
-type StateType = {};
+type StateType = {
+  dialogue: number
+};
 
 function mapStateToProps(state: Object) {
   return {
@@ -37,7 +42,7 @@ function mapDispatchToProps(dispatch: Function) {
     },
 
     cancelRequest: (request_id: number) => {
-      dispatch(RoomServiceActions.setRequestedServiceDone(request_id))
+      dispatch(RoomServiceActions.setRequestedServiceCancelled(request_id))
     }
   };
 }
@@ -72,19 +77,45 @@ class RoomServiceView extends React.Component<PropsType, StateType> {
     ]
   };
 
-  _renderRequestCard(request) {
+  state = {
+    dialogue: -1
+  };
+
+  componentWillMount() {
+    if (Platform.OS === 'android') {
+      UIManager.setLayoutAnimationEnabledExperimental(true);
+    }
+  }
+
+  _getServiceFromId(service_id: number): Object {
     const { services } = this.props;
 
+    return services.find((service) => {
+      return service.id === service_id
+    });
+  }
+
+  _renderRequestCard(request) {
+    const { services, cancelRequest } = this.props;
+    const service = this._getServiceFromId(request.id);
+
     return (
-      <View style={styles.request_card}>
-        <Text>{request.id} {request.service_id}</Text>
-      </View>
+      <RequestedServiceCard key={'requested-service-card-' + request.id}
+        {...request}
+        service={service}
+        cancelRequest={() => cancelRequest(service.id)}/>
     );
   }
 
-  _createServiceButtons(services: Array<ServiceType>) {
-    const { requestService } = this.props;
+  toggleServiceDialogue(service_id: number = -1) {
+    LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
 
+    this.setState({
+      dialogue: service_id
+    });
+  }
+
+  _createServiceButtons(services: Array<ServiceType>) {
     if (services.length == 0) {
       return [];
     }
@@ -92,10 +123,14 @@ class RoomServiceView extends React.Component<PropsType, StateType> {
     const service_buttons = [];
     var service_ids = '';
     for (var i = 0; i < services.length && i < 2; i++) {
-      service_ids += '-' + services[i].id;
+      const service_id = services[i].id;
+      service_ids += '-' + service_id;
       service_buttons.push(
-        <ServiceButton key={'service-button-' + services[i].id}
-          onPress={() => requestService(services[i].id)}
+        <ServiceButton key={'service-button-' + service_id}
+          onPress={() => {
+            LayoutAnimation.configureNext(LayoutAnimation.Presets.spring);
+            this.toggleServiceDialogue(service_id);
+          }}
           {...services[i]} />
       );
     }
@@ -134,7 +169,8 @@ class RoomServiceView extends React.Component<PropsType, StateType> {
   }
 
   render() {
-    const { requests } = this.props;
+    const { requests, requestService } = this.props;
+    const { dialogue } = this.state;
 
     /* create service buttons */
     const service_buttons = this.createServiceButtons()
@@ -144,12 +180,31 @@ class RoomServiceView extends React.Component<PropsType, StateType> {
       requests_cards.push(this._renderRequestCard(requests[i]));
     }
 
+    /* create dialogue box */
+    var dialogue_overlay = null;
+    if (dialogue > -1) {
+      const service = this._getServiceFromId(dialogue);
+      dialogue_overlay = (
+        <View style={styles.dialogue_overlay}>
+          <ServiceDialogue service={service}
+            closeDialogue={this.toggleServiceDialogue.bind(this)}
+            submitService={() => requestService(service.id)} />
+        </View>
+      );
+    }
+
     return (
       <View style={styles.container}>
         {service_buttons}
         <View style={styles.requests_history}>
-          {requests_cards}
+          <Text style={styles.header}>
+            Requested Services
+          </Text>
+          <ScrollView>
+            {requests_cards}
+          </ScrollView>
         </View>
+        {dialogue_overlay}
       </View>
     );
   }
@@ -166,6 +221,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#161819'
   },
+  dialogue_overlay: {
+    position: 'absolute',
+    height: '100%',
+    width: '100%',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)'
+  },
+  header: {
+    fontSize: 27,
+    fontFamily: 'CeraPRO-Bold',
+    color: '#FFFFFF'
+  },
   services: {
     flex: 1,
   },
@@ -176,7 +242,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   requests_history: {
-    flex: 1
+    flex: 1,
+    padding: 10,
   },
   request_card: {
     flex: 1,
